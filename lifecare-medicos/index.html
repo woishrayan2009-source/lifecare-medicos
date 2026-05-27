@@ -1,0 +1,1618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- =============================================
+       SEO — PRIMARY META
+  ============================================= -->
+  <title>Lifecare Medicos — Your Health Is Our Priority | Bhanga, Sribhumi</title>
+
+  <meta name="description" content="Lifecare Medicos in Bhanga Bazar, Sribhumi offers specialist doctor consultations, diagnostic services, and genuine medicines. Open 7AM-11PM. Book appointments via WhatsApp." />
+  <meta name="keywords" content="lifecare medicos, doctor bhanga, medicine store sribhumi, skin specialist assam, diagnostic services bhanga, doctor consultation bhanga bazar, pharmacy sribhumi, dermatologist assam, general physician bhanga" />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="Lifecare Medicos" />
+
+  <!-- =============================================
+       SEO — CANONICAL
+       ⚠️ REPLACE: Set the actual deployed domain here.
+  ============================================= -->
+  <link rel="canonical" href="https://lifecaremedicos.in/" />
+
+  <!-- =============================================
+       OPEN GRAPH — Social sharing preview
+       ⚠️ REPLACE: og:url with actual domain.
+       ⚠️ REPLACE: og:image with a real 1200×630 photo.
+  ============================================= -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:site_name"   content="Lifecare Medicos" />
+  <meta property="og:url"         content="https://lifecaremedicos.in/" />
+  <meta property="og:title"       content="Lifecare Medicos — Your Health Is Our Priority | Bhanga, Sribhumi" />
+  <meta property="og:description" content="Lifecare Medicos in Bhanga Bazar, Sribhumi offers specialist doctor consultations, diagnostic services, and genuine medicines. Open 7AM-11PM. Book appointments via WhatsApp." />
+  <meta property="og:image"       content="assets/images/og-image.jpg" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale"      content="en_IN" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content="Lifecare Medicos — Your Health Is Our Priority | Bhanga, Sribhumi" />
+  <meta name="twitter:description" content="Specialist doctors, diagnostics &amp; genuine medicines in Bhanga Bazar, Sribhumi. Open 7AM–11PM every day." />
+  <meta name="twitter:image"       content="assets/images/og-image.jpg" />
+
+  <!-- =============================================
+       PWA / THEME
+  ============================================= -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#1a6b4a" />
+
+  <!-- ⚠️ REPLACE: swap favicon.png with the actual store favicon -->
+  <link rel="icon" type="image/png" href="assets/images/favicon.png" />
+
+  <!-- =============================================
+       FONTS — Poppins (Google Fonts CDN)
+  ============================================= -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome 6 CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <!-- =============================================
+       CRITICAL INLINE CSS
+       Above-the-fold styles for nav + hero only.
+       Prevents any flash of unstyled content while
+       the external stylesheet finishes loading.
+  ============================================= -->
+  <style>
+    /* ----- Reset essentials ----- */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      color: #1c1c1c;
+      background-color: #f8fffe;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    img { max-width: 100%; height: auto; display: block; }
+
+    /* ----- Layout ----- */
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      margin-inline: auto;
+      padding-inline: 24px;
+    }
+
+    /* ----- Sticky nav ----- */
+    .nav-header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background-color: #fff;
+      border-bottom: 1px solid transparent;
+      transition: border-color .25s ease, box-shadow .25s ease;
+    }
+    .nav-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+      gap: 16px;
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+      text-decoration: none;
+      color: inherit;
+    }
+    .nav-logo {
+      width: 44px; height: 44px;
+      object-fit: contain;
+      border-radius: 8px;
+      background-color: #e8f5e9;
+      padding: 4px;
+    }
+    .nav-brand-text { display: flex; flex-direction: column; line-height: 1.2; }
+    .nav-brand-name {
+      font-size: 1.05rem; font-weight: 700;
+      color: #1a6b4a; letter-spacing: -0.01em;
+    }
+    .nav-brand-tagline {
+      font-size: 0.65rem; font-weight: 300;
+      color: #666; letter-spacing: 0.02em;
+    }
+
+    /* ----- Hero section (above fold) ----- */
+    .hero-section {
+      position: relative;
+      min-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow: hidden;
+      background-color: #1a6b4a;
+      background-image: linear-gradient(135deg, #1a6b4a 0%, #2d8f63 100%);
+    }
+    .hero-container {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 60% 40%;
+      align-items: center;
+      gap: 64px;
+      padding-block: 64px;
+    }
+    .hero-content {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      opacity: 0;
+      transform: translateY(28px);
+      animation: heroFadeUp .75s ease .15s forwards;
+    }
+    @keyframes heroFadeUp { to { opacity: 1; transform: translateY(0); } }
+    .hero-title {
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    /* ----- Page loader ----- */
+    #pageLoader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background-color: #1a6b4a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      transition: opacity .5s ease, visibility .5s ease;
+    }
+    #pageLoader.hidden { opacity: 0; visibility: hidden; }
+    .loader-logo-text {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.01em;
+    }
+    .loader-tagline {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 300;
+      color: rgba(255,255,255,.65);
+      letter-spacing: 0.08em;
+    }
+    .loader-spinner {
+      width: 40px; height: 40px;
+      border: 3px solid rgba(255,255,255,.20);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: loaderSpin .8s linear infinite;
+    }
+    @keyframes loaderSpin { to { transform: rotate(360deg); } }
+
+    /* ----- Floating WhatsApp button ----- */
+    #floatWA {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 1200;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: #25d366;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.55rem;
+      box-shadow: 0 4px 20px rgba(37,211,102,.45);
+      text-decoration: none;
+      animation: waPulse 2.8s ease-in-out infinite;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    #floatWA:hover {
+      transform: scale(1.10);
+      box-shadow: 0 6px 28px rgba(37,211,102,.60);
+      animation-play-state: paused;
+    }
+    @keyframes waPulse {
+      0%, 100% { box-shadow: 0 4px 20px rgba(37,211,102,.45); }
+      50%       { box-shadow: 0 4px 20px rgba(37,211,102,.45), 0 0 0 10px rgba(37,211,102,.12); }
+    }
+    /* Tooltip on hover */
+    #floatWA::before {
+      content: 'Chat on WhatsApp';
+      position: absolute;
+      right: calc(100% + 12px);
+      top: 50%;
+      transform: translateY(-50%);
+      white-space: nowrap;
+      background: rgba(0,0,0,.75);
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 5px 11px;
+      border-radius: 6px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .2s ease;
+    }
+    #floatWA:hover::before { opacity: 1; }
+
+    /* ----- Back to Top button ----- */
+    #backToTop {
+      position: fixed;
+      bottom: 94px;   /* sits above the WA button */
+      right: 24px;
+      z-index: 1200;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background-color: #145539;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      box-shadow: 0 4px 16px rgba(20,85,57,.35);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(12px);
+      transition: opacity .3s ease, visibility .3s ease, transform .3s ease, background-color .2s ease;
+    }
+    #backToTop.visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    #backToTop:hover { background-color: #1a6b4a; }
+    #backToTop:focus-visible {
+      outline: 2px solid #1a6b4a;
+      outline-offset: 3px;
+    }
+
+    /* ----- Mobile tweaks for float buttons ----- */
+    @media (max-width: 480px) {
+      #floatWA   { width: 52px; height: 52px; font-size: 1.35rem; }
+      #backToTop { bottom: 86px; width: 40px; height: 40px; font-size: 0.9rem; }
+    }
+  </style>
+
+  <!-- External Stylesheet (deferred after critical inline above) -->
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+
+  <!-- =============================================
+       PAGE LOADING ANIMATION
+       Fades out after 1 second. Keeps experience
+       smooth on slower connections or first load.
+  ============================================= -->
+  <div id="pageLoader" role="status" aria-label="Loading Lifecare Medicos website">
+    <div class="loader-spinner" aria-hidden="true"></div>
+    <div class="loader-logo-text">Lifecare Medicos</div>
+    <div class="loader-tagline">YOUR HEALTH IS OUR PRIORITY</div>
+  </div>
+
+
+  <!-- =============================================
+       FLOATING WHATSAPP BUTTON
+       Fixed bottom-right. Gentle pulse animation.
+       Tooltip on hover. Opens WhatsApp chat.
+  ============================================= -->
+  <a
+    id="floatWA"
+    href="https://wa.me/918473966611"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Chat with Lifecare Medicos on WhatsApp"
+  >
+    <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+  </a>
+
+
+  <!-- =============================================
+       BACK TO TOP BUTTON
+       Appears after scrolling 400px. Smooth-scrolls
+       to top on click. Positioned above the WA button.
+  ============================================= -->
+  <button
+    id="backToTop"
+    type="button"
+    aria-label="Back to top of page"
+  >
+    <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+  </button>
+
+
+  <!-- =============================================
+       STICKY NAVIGATION BAR
+  ============================================= -->
+  <header class="nav-header" id="navbar">
+    <nav class="nav-container container">
+
+      <!-- Logo + Brand -->
+      <!-- ⚠️ REPLACE: swap logo.png with actual store logo -->
+      <a href="#hero" class="nav-brand" aria-label="Lifecare Medicos — Back to top">
+        <img
+          src="assets/images/logo.png"
+          alt="Lifecare Medicos logo — medical store in Bhanga Bazar, Sribhumi"
+          class="nav-logo"
+          width="44"
+          height="44"
+          loading="eager"
+        />
+        <div class="nav-brand-text">
+          <span class="nav-brand-name">Lifecare Medicos</span>
+          <span class="nav-brand-tagline">Your Health Is Our Priority</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation Links -->
+      <ul class="nav-links" id="navLinks" role="list">
+        <li><a href="#hero"        class="nav-link active">Home</a></li>
+        <li><a href="#doctors"     class="nav-link">Doctors</a></li>
+        <li><a href="#about"       class="nav-link">About Us</a></li>
+        <li><a href="#diagnostics" class="nav-link">Diagnostics</a></li>
+        <li><a href="#reviews"     class="nav-link">Reviews</a></li>
+        <li><a href="#gallery"     class="nav-link">Gallery</a></li>
+        <li><a href="#contact"     class="nav-link">Contact</a></li>
+      </ul>
+
+      <!-- Right side actions -->
+      <div class="nav-actions">
+        <a href="admin.html" class="btn-admin" aria-label="Admin login panel">
+          <i class="fa-solid fa-lock" aria-hidden="true"></i>
+          <span>Admin</span>
+        </a>
+
+        <!-- Hamburger Toggle -->
+        <button
+          class="hamburger"
+          id="hamburger"
+          aria-label="Toggle navigation menu"
+          aria-expanded="false"
+          aria-controls="navLinks"
+        >
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+      </div>
+
+    </nav>
+  </header>
+
+  <!-- Mobile Nav Overlay -->
+  <div class="nav-overlay" id="navOverlay" aria-hidden="true"></div>
+
+
+  <!-- =============================================
+       MAIN CONTENT
+  ============================================= -->
+  <main>
+
+    <!-- ==========================================
+         HERO SECTION
+    =========================================== -->
+    <section id="hero" class="hero-section" aria-label="Lifecare Medicos — Welcome">
+
+      <!-- Overlay: dims any future background image -->
+      <div class="hero-overlay" aria-hidden="true"></div>
+
+      <!-- Decorative blurred circles for visual depth -->
+      <div class="hero-blob hero-blob--1" aria-hidden="true"></div>
+      <div class="hero-blob hero-blob--2" aria-hidden="true"></div>
+
+      <div class="container hero-container">
+
+        <!-- ---- LEFT: Main Content (60%) ---- -->
+        <div class="hero-content" id="heroContent">
+
+          <!-- Trust badge -->
+          <div class="hero-badge">
+            <i class="fa-solid fa-shield-heart" aria-hidden="true"></i>
+            Trusted Healthcare Since Day One
+          </div>
+
+          <!-- Main heading -->
+          <h1 class="hero-title">Lifecare Medicos</h1>
+
+          <!-- Tagline -->
+          <p class="hero-tagline">
+            <em>Your Health Is Our Priority</em>
+          </p>
+
+          <!-- Address line -->
+          <p class="hero-address">
+            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+            Bazar Road, Bhanga Bazar, Sribhumi, Assam
+          </p>
+
+          <!-- Phone buttons -->
+          <div class="hero-phones">
+            <a href="tel:+918473966611" class="btn-phone" aria-label="Call Lifecare Medicos on 8473966611">
+              <i class="fa-solid fa-phone" aria-hidden="true"></i>
+              8473966611
+            </a>
+            <a href="tel:+917980560994" class="btn-phone" aria-label="Call Lifecare Medicos on 7980560994">
+              <i class="fa-solid fa-phone" aria-hidden="true"></i>
+              7980560994
+            </a>
+          </div>
+
+          <!-- WhatsApp CTA -->
+          <a
+            href="https://wa.me/918473966611"
+            class="btn-whatsapp"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Book a doctor appointment on WhatsApp with Lifecare Medicos"
+          >
+            <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+            Book Appointment on WhatsApp
+          </a>
+
+        </div><!-- /hero-content -->
+
+
+        <!-- ---- RIGHT: Info Card (40%) ---- -->
+        <div class="hero-card" id="heroCard" aria-label="Store hours and today's consulting doctors">
+
+          <!-- Hours block -->
+          <div class="hero-card__hours">
+            <div class="hero-card__icon-wrap" aria-hidden="true">
+              <i class="fa-solid fa-clock"></i>
+            </div>
+            <div class="hero-card__hours-info">
+              <span class="hero-card__label">Today's Hours</span>
+              <span class="hero-card__time">7:00 AM – 11:00 PM</span>
+            </div>
+            <!-- Open/Closed badge — populated by JS -->
+            <span class="hero-status-badge" id="storeStatusBadge" aria-live="polite">
+              <span class="hero-status-dot" id="storeStatusDot" aria-hidden="true"></span>
+              <span id="storeStatusText">Checking…</span>
+            </span>
+          </div>
+
+          <div class="hero-card__divider" aria-hidden="true"></div>
+
+          <!-- Consulting Doctors Today — populated by JS doctors module -->
+          <div class="hero-card__doctors">
+            <span class="hero-card__label">
+              <i class="fa-solid fa-user-doctor" aria-hidden="true"></i>
+              Consulting Doctors Today
+            </span>
+            <div class="hero-card__doctors-list" id="heroTodayDoctors" aria-live="polite">
+              <!-- Populated by main.js doctorsModule.renderHeroTodayDoctors() -->
+              <div class="hero-doctors-placeholder">
+                <span class="hero-doctors-loading">
+                  <i class="fa-solid fa-circle-notch fa-spin" aria-hidden="true"></i>
+                  Loading…
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-card__divider" aria-hidden="true"></div>
+
+          <!-- All days open note -->
+          <div class="hero-card__note">
+            <i class="fa-solid fa-calendar-check" aria-hidden="true"></i>
+            Open all 7 days — including holidays
+          </div>
+
+        </div><!-- /hero-card -->
+
+      </div><!-- /hero-container -->
+
+      <!-- Scroll hint -->
+      <a href="#doctors" class="hero-scroll-hint" aria-label="Scroll down to meet our doctors">
+        <span>Meet Our Doctors</span>
+        <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+      </a>
+
+    </section><!-- /hero -->
+
+
+    <!-- ==========================================
+         DOCTORS SECTION
+    =========================================== -->
+    <section id="doctors" class="section section-alt" aria-labelledby="doctorsHeading">
+      <div class="container">
+
+        <!-- Section Header -->
+        <div class="section-heading">
+          <span class="label">
+            <i class="fa-solid fa-user-doctor" aria-hidden="true"></i>
+            Meet The Team
+          </span>
+          <h2 id="doctorsHeading">Our Specialist Doctors</h2>
+          <p>Expert consultations from qualified specialists — right here at Bhanga Bazar</p>
+          <div class="section-heading__underline" aria-hidden="true"></div>
+        </div>
+
+        <!-- Doctor Cards Grid — populated by JS -->
+        <div class="doctors-grid" id="doctorsGrid" role="list" aria-label="Our specialist doctors">
+          <!-- Cards injected here by main.js -->
+        </div>
+
+        <!-- Bottom CTA -->
+        <div class="doctors-cta">
+          <p>Not sure which doctor to see? Call us and we'll guide you.</p>
+          <div class="doctors-cta__buttons">
+            <a href="tel:+918473966611" class="btn btn-outline" aria-label="Call Lifecare Medicos on 8473966611">
+              <i class="fa-solid fa-phone" aria-hidden="true"></i>
+              Call 8473966611
+            </a>
+            <a
+              href="https://wa.me/918473966611"
+              class="btn btn-primary"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Message Lifecare Medicos on WhatsApp"
+            >
+              <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+              WhatsApp Us
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section><!-- /doctors -->
+
+
+    <!-- ==========================================
+         ABOUT US SECTION
+    =========================================== -->
+    <section id="about" class="section about-section" aria-labelledby="aboutHeading">
+      <div class="container">
+
+        <div class="about-grid">
+
+          <!-- ====================================
+               LEFT COLUMN — Visual + Stats
+          ===================================== -->
+          <div class="about-left">
+
+            <!--
+              Store Visual Card
+              ⚠️ REPLACE: To use a real store photo, add this inline style to .about-store-visual:
+                  style="background-image: url('assets/images/store-front.jpg');"
+              The overlay and text will remain over the photo automatically.
+            -->
+            <div class="about-store-visual" role="img" aria-label="Lifecare Medicos store — Bazar Road, Bhanga Bazar, open 7 AM to 11 PM">
+
+              <!-- Dark overlay — dims photo if one is added -->
+              <div class="about-store-visual__overlay" aria-hidden="true"></div>
+
+              <!-- Decorative cross icon -->
+              <div class="about-store-visual__cross" aria-hidden="true">
+                <i class="fa-solid fa-plus"></i>
+              </div>
+
+              <!-- Store info text over the visual -->
+              <div class="about-store-visual__text">
+                <p class="about-store-visual__name">Lifecare Medicos</p>
+                <p class="about-store-visual__addr">
+                  <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                  Bazar Road, Bhanga Bazar<br>Sribhumi, Assam
+                </p>
+                <span class="about-store-visual__tag">
+                  <i class="fa-solid fa-clock" aria-hidden="true"></i>
+                  Open 7 AM – 11 PM · All Days
+                </span>
+              </div>
+
+            </div><!-- /about-store-visual -->
+
+
+            <!-- ---- Three Stat Cards ---- -->
+            <div class="about-stats" role="list" aria-label="Store highlights">
+
+              <div class="about-stat-card" role="listitem">
+                <div class="about-stat-card__icon" aria-hidden="true">
+                  <i class="fa-solid fa-user-doctor"></i>
+                </div>
+                <div class="about-stat-card__num" aria-label="4 or more specialist doctors">4+</div>
+                <div class="about-stat-card__label">Specialist Doctors</div>
+              </div>
+
+              <div class="about-stat-card" role="listitem">
+                <div class="about-stat-card__icon" aria-hidden="true">
+                  <i class="fa-solid fa-clock"></i>
+                </div>
+                <div class="about-stat-card__num" aria-label="Open 7 AM to 11 PM">7–11</div>
+                <div class="about-stat-card__label">Open 7 AM – 11 PM</div>
+              </div>
+
+              <div class="about-stat-card" role="listitem">
+                <div class="about-stat-card__icon" aria-hidden="true">
+                  <i class="fa-solid fa-briefcase-medical"></i>
+                </div>
+                <div class="about-stat-card__num" aria-hidden="true">✦</div>
+                <div class="about-stat-card__label">Multiple Services</div>
+              </div>
+
+            </div><!-- /about-stats -->
+
+          </div><!-- /about-left -->
+
+
+          <!-- ====================================
+               RIGHT COLUMN — Text Content
+          ===================================== -->
+          <div class="about-right">
+
+            <!-- Section label pill -->
+            <span class="about-label-pill">
+              <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+              About Us
+            </span>
+
+            <!-- Heading -->
+            <h2 class="about-heading" id="aboutHeading">Your Trusted Healthcare Partner</h2>
+
+            <!-- About us body text -->
+            <div class="about-body">
+              <p>
+                Welcome to Lifecare Medicos, Bazar Road, Bhanga — your trusted destination for quality
+                healthcare services and genuine medicines. We are committed to providing reliable medical
+                support, expert doctor consultations, and patient-friendly healthcare solutions under one roof.
+              </p>
+              <p>
+                At Lifecare Medicos, we regularly organise specialist consultation OPDs with experienced
+                doctors from various fields including Dermatology, General Medicine, Cardiology, and more.
+                Our goal is to ensure that people receive advanced medical care and proper guidance close
+                to home.
+              </p>
+              <p>
+                We believe in compassionate care, accurate diagnosis, and affordable treatment for every
+                patient. With dedicated service, trusted healthcare professionals, and a patient-first
+                approach, Lifecare Medicos continues to serve the community with honesty, care, and
+                commitment.
+              </p>
+              <p class="about-body__tagline">
+                <em>Your health is our priority.</em>
+              </p>
+            </div>
+
+            <!-- Horizontal divider -->
+            <div class="about-divider" aria-hidden="true"></div>
+
+            <!-- Store Address -->
+            <div class="about-contact-block">
+              <div class="about-contact-row about-contact-row--addr">
+                <div class="about-contact-row__icon" aria-hidden="true">
+                  <i class="fa-solid fa-location-dot"></i>
+                </div>
+                <div class="about-contact-row__text">
+                  <span class="about-contact-row__label">Address</span>
+                  <span class="about-contact-row__value">
+                    Lifecare Medicos, Bazar Road, Bhanga Bazar, Sribhumi (Assam)
+                  </span>
+                </div>
+              </div>
+
+              <!-- Phone 1 -->
+              <a href="tel:+918473966611" class="about-contact-row about-contact-row--phone" aria-label="Call Lifecare Medicos on 8473966611">
+                <div class="about-contact-row__icon" aria-hidden="true">
+                  <i class="fa-solid fa-phone"></i>
+                </div>
+                <div class="about-contact-row__text">
+                  <span class="about-contact-row__label">Phone</span>
+                  <span class="about-contact-row__value">8473966611</span>
+                </div>
+              </a>
+
+              <!-- Phone 2 -->
+              <a href="tel:+917980560994" class="about-contact-row about-contact-row--phone" aria-label="Call Lifecare Medicos on 7980560994">
+                <div class="about-contact-row__icon" aria-hidden="true">
+                  <i class="fa-solid fa-phone"></i>
+                </div>
+                <div class="about-contact-row__text">
+                  <span class="about-contact-row__label">Phone</span>
+                  <span class="about-contact-row__value">7980560994</span>
+                </div>
+              </a>
+
+              <!-- Hours row -->
+              <div class="about-contact-row">
+                <div class="about-contact-row__icon" aria-hidden="true">
+                  <i class="fa-solid fa-clock"></i>
+                </div>
+                <div class="about-contact-row__text">
+                  <span class="about-contact-row__label">Store Hours</span>
+                  <span class="about-contact-row__value">Mon – Sun: 7:00 AM – 11:00 PM</span>
+                </div>
+              </div>
+
+            </div><!-- /about-contact-block -->
+
+          </div><!-- /about-right -->
+
+        </div><!-- /about-grid -->
+
+      </div>
+    </section><!-- /about -->
+
+
+    <!-- ==========================================
+         DIAGNOSTICS SECTION
+    =========================================== -->
+    <section id="diagnostics" class="section section-alt diag-section" aria-labelledby="diagHeading">
+      <div class="container">
+
+        <!-- Section Header -->
+        <div class="section-heading">
+          <span class="label">
+            <i class="fa-solid fa-microscope" aria-hidden="true"></i>
+            Lab &amp; Tests
+          </span>
+          <h2 id="diagHeading">Diagnostic Services</h2>
+          <p>Common lab tests, blood work, and health screenings available at Lifecare Medicos</p>
+          <div class="section-heading__underline" aria-hidden="true"></div>
+        </div>
+
+        <!-- Search bar -->
+        <div class="diag-search-wrap" role="search" aria-label="Search diagnostic tests">
+          <div class="diag-search-box">
+            <i class="fa-solid fa-magnifying-glass diag-search-icon" aria-hidden="true"></i>
+            <input
+              type="search"
+              id="diagSearch"
+              class="diag-search-input"
+              placeholder="Search tests, e.g. Blood Sugar, CBC…"
+              aria-label="Search diagnostic tests"
+              autocomplete="off"
+              spellcheck="false"
+            />
+            <button
+              type="button"
+              id="diagSearchClear"
+              class="diag-search-clear"
+              aria-label="Clear search"
+              hidden
+            >
+              <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Diagnostic Cards Grid — populated by JS -->
+        <div class="diag-grid" id="diagGrid" role="list" aria-label="Available diagnostic tests">
+          <!-- Cards injected by main.js renderDiagnosticCards() -->
+        </div>
+
+        <!-- No-results message — shown by JS when search finds nothing -->
+        <div class="diag-no-results" id="diagNoResults" hidden aria-live="polite">
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          <p>No tests found for "<strong><span id="diagNoResultsTerm"></span></strong>"</p>
+          <span>Try a different keyword, e.g. "Blood", "Urine", or "CBC"</span>
+        </div>
+
+        <!-- Footer note -->
+        <div class="diag-footer-note">
+          <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+          <span>
+            For home sample collection or test pricing, call
+            <a href="tel:+918473966611" aria-label="Call 8473966611 for diagnostic info">8473966611</a> or
+            <a href="https://wa.me/918473966611" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp Lifecare Medicos for diagnostic info">WhatsApp us</a>.
+          </span>
+        </div>
+
+      </div>
+    </section><!-- /diagnostics -->
+
+
+    <!-- ==========================================
+         REVIEWS SECTION
+    =========================================== -->
+    <section id="reviews" class="section reviews-section" aria-labelledby="reviewsHeading">
+      <div class="container">
+
+        <!-- Section Header -->
+        <div class="section-heading">
+          <span class="label">
+            <i class="fa-solid fa-star" aria-hidden="true"></i>
+            Patient Testimonials
+          </span>
+          <h2 id="reviewsHeading">What Our Patients Say</h2>
+          <p>Real experiences from our community</p>
+          <div class="section-heading__underline" aria-hidden="true"></div>
+        </div>
+
+        <!--
+          Carousel layout:
+          [← Prev]  [track-wrap: shows N cards at once]  [Next →]
+          The track inside slides via JS transform.
+        -->
+        <div
+          class="reviews-carousel"
+          id="reviewsCarousel"
+          aria-label="Patient reviews carousel"
+          aria-roledescription="carousel"
+        >
+
+          <!-- Previous arrow -->
+          <button
+            class="reviews-nav reviews-nav--prev"
+            id="reviewsPrev"
+            aria-label="Show previous patient reviews"
+            type="button"
+          >
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+          </button>
+
+          <!-- Clip container -->
+          <div class="reviews-track-wrap" id="reviewsTrackWrap">
+            <div
+              class="reviews-track"
+              id="reviewsTrack"
+              role="list"
+              aria-live="polite"
+              aria-atomic="false"
+            >
+              <!-- Review cards injected by main.js initReviewsCarousel() -->
+            </div>
+          </div>
+
+          <!-- Next arrow -->
+          <button
+            class="reviews-nav reviews-nav--next"
+            id="reviewsNext"
+            aria-label="Show next patient reviews"
+            type="button"
+          >
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          </button>
+
+        </div><!-- /reviews-carousel -->
+
+        <!-- Dot indicators -->
+        <div
+          class="reviews-dots"
+          id="reviewsDots"
+          role="group"
+          aria-label="Slide navigation dots"
+        ></div>
+
+        <!-- ⚠️ REPLACE BEFORE PUBLISHING:
+             Replace the 6 sample reviews in main.js (REVIEWS array)
+             with real patient testimonials provided by the client.
+        -->
+
+      </div>
+    </section><!-- /reviews -->
+
+
+    <!-- ==========================================
+         GALLERY SECTION
+    =========================================== -->
+    <section id="gallery" class="section section-alt gallery-section" aria-labelledby="galleryHeading">
+      <div class="container">
+
+        <!-- Section Header -->
+        <div class="section-heading">
+          <span class="label">
+            <i class="fa-solid fa-camera" aria-hidden="true"></i>
+            Our Facility
+          </span>
+          <h2 id="galleryHeading">A Look Inside Lifecare Medicos</h2>
+          <p>Our store, consultation areas, and team — right here in Bhanga Bazar</p>
+          <div class="section-heading__underline" aria-hidden="true"></div>
+        </div>
+
+        <!--
+          Masonry-style CSS Grid gallery.
+          3 columns on desktop, 2 on tablet, 1 on mobile.
+
+          ⚠️ REPLACE BEFORE PUBLISHING:
+          Drop real photos into assets/images/ with these filenames:
+            store-1.jpg  — Store Front
+            store-2.jpg  — Medicine Counter
+            store-3.jpg  — Consultation Area
+            store-4.jpg  — Diagnostic Setup
+            store-5.jpg  — Medicine Storage
+            store-6.jpg  — Waiting Area
+            store-7.jpg  — Store Interior
+            store-8.jpg  — Staff at Work
+        -->
+        <div class="gallery-grid" id="galleryGrid" role="list" aria-label="Lifecare Medicos facility photos — click to enlarge">
+
+          <!-- Item 1 — Store Front -->
+          <div
+            class="gallery-item"
+            role="listitem"
+            data-index="0"
+            data-caption="Store Front — Bazar Road"
+            aria-label="Gallery photo 1 of 8: Store Front on Bazar Road — click to enlarge"
+          >
+            <div class="gallery-placeholder" aria-hidden="true">
+              <i class="fa-solid fa-store gallery-placeholder__icon"></i>
+            </div>
+            <img
+              src="assets/images/store-1.jpg"
+              alt="Exterior view of Lifecare Medicos store on Bazar Road, Bhanga Bazar, Sribhumi"
+              class="gallery-img"
+              loading="lazy"
+              onload="this.classList.add('loaded')"
+              onerror="this.style.display='none'"
+            />
+            <div class="gallery-overlay" aria-hidden="true">
+              <span class="gallery-caption">Store Front — Bazar Road</span>
+              <i class="fa-solid fa-expand gallery-expand-icon"></i>
+            </div>
+          </div>
+
+          <!-- Item 2 — Medicine Counter -->
+          <div
+            class="gallery-item"
+            role="listitem"
+            data-index="1"
+            data-caption="Medicine Counter"
+            aria-label="Gallery photo 2 of 8: Medicine Counter — click to enlarge"
+          >
+            <div class="gallery-placeholder gallery-placeholder--blue" aria-hidden="true">
+              <i class="fa-solid fa-pills gallery-placeholder__icon"></i>
+            </div>
+            <img
+              src="assets/images/store-2.jpg"
+              alt="Well-stocked medicine counter at Lifecare Medicos pharmacy"
+              class="gallery-img"
+              loading="lazy"
+              onload="this.classList.add('loaded')"
+              onerror="this.style.display='none'"
+            />
+            <div class="gallery-overlay" aria-hidden="true">
+              <span class="gallery-caption">Medicine Counter</span>
+              <i class="fa-solid fa-expand gallery-expand-icon"></i>
+            </div>
+          </div>
+
+          <!-- Item 3 — Consultation Area -->
+          <div
+            class="gallery-item"
+            role="listitem"
+            data-index="2"
+            data-caption="Consultation Area"
+            aria-label="Gallery photo 3 of 8: Doctor Consultation Area — click to enlarge"
+          >
+            <div class="gallery-placeholder gallery-placeholder--teal" aria-hidden="true">
+              <i class="fa-solid fa-user-doctor gallery-placeholder__icon"></i>
+            </div>
+            <img
+              src="assets/images/store-3.jpg"
+              alt="Private doctor consultation room at Lifecare Medicos"
+              class="gallery-img"
+              loading="lazy"
+              onload="this.classList.add('loaded')"
+              onerror="this.style.display='none'"
+            />
+            <div class="gallery-overlay" aria-hidden="true">
+              <span class="gallery-caption">Consultation Area</span>
+              <i class="fa-solid fa-expand gallery-expand-icon"></i>
+            </div>
+          </div>
+
+          <!-- Item 4 — Diagnostic Setup -->
+          <div
+            class="gallery-item"
+            role="listitem"
+            data-index="3"
+            data-caption="Diagnostic Setup"
+            aria-label="Gallery photo 4 of 8: Diagnostic Laboratory Setup — click to enlarge"
+          >
+            <div class="gallery-placeholder gallery-placeholder--red" aria-hidden="true">
+              <i class="fa-solid fa-microscope gallery-placeholder__icon"></i>
+            </div>
+            <img
+              src="assets/images/store-4.jpg"
+              alt="Diagnostic laboratory and testing equipment at Lifecare Medicos"
+              class="gallery-img"
+              loading="lazy"
+              onload="this.classList.add('loaded')"
+              onerror="this.style.display='none'"
+            />
+            <div class="gallery-overlay" aria-hidden="true">
+              <span class="gallery-caption">Diagnostic Setup</span>
+              <i class="fa-solid fa-expand gallery-expand-icon"></i>
+            </div>
+          </div>
+
+          <!-- Item 5 — Medicine Storage -->
+          <div
+            class="gallery-item"
+            role="listitem"
+            data-index="4"
+            data-caption="Medicine Storage"
+            aria-label="Gallery photo 5 of 8: Organised Medicine Storage — click to enlarge"
+          >
+            <div class="gallery-placeholder gallery-placeholder--purple" aria-hidden="true">
+              <i class="fa-solid fa-boxes-stacked gallery-placeholder__icon"></i>
+            </div>
+            <img
+              src="assets/images/store-5.jpg"
+              alt="Organised medicine shelves and storage area at Lifecare Medicos"
+              class="gallery-img"
+              loading="lazy"
+              onload="this.classList.add('loaded')"
+              onerror="this.style.display='none'"
+            />
+            <div class="gallery-overlay" aria-hidden="true">
+              <span class="gallery-caption">Medicine Storage</span>
+              <i class="fa-solid fa-expand gallery-expand-icon"></i>
+            </div>
+          </div>
+
+          <!-- Item 6 — Waiting Area -->
+          <div
+            class="gallery-item"
+            role="listitem"
+            data-index="5"
+            data-caption="Waiting Area"
+            aria-label="Gallery photo 6 of 8: Patient Waiting Area — click to enlarge"
+          >
+            <div class="gallery-placeholder gallery-placeholder--orange" aria-hidden="true">
+              <i class="fa-solid fa-couch gallery-placeholder__icon"></i>
+            </div>
+            <img
+              src="assets/images/store-6.jpg"
+              alt="Comfortable patient waiting area at Lifecare Medicos"
+              class="gallery-img"
+              loading="lazy"
+              onload="this.classList.add('loaded')"
+              onerror="this.style.display='none'"
+            />
+            <div class="gallery-overlay" aria-hidden="true">
+              <span class="gallery-caption">Waiting Area</span>
+              <i class="fa-solid fa-expand gallery-expand-icon"></i>
+            </div>
+          </div>
+
+          <!-- Item 7 — Store Interior -->
+          <div
+            class="gallery-item"
+            role="listitem"
+            data-index="6"
+            data-caption="Store Interior"
+            aria-label="Gallery photo 7 of 8: Store Interior — click to enlarge"
+          >
+            <div class="gallery-placeholder gallery-placeholder--green" aria-hidden="true">
+              <i class="fa-solid fa-shop gallery-placeholder__icon"></i>
+            </div>
+            <img
+              src="assets/images/store-7.jpg"
+              alt="Interior view of Lifecare Medicos pharmacy and medical centre, Bhanga Bazar"
+              class="gallery-img"
+              loading="lazy"
+              onload="this.classList.add('loaded')"
+              onerror="this.style.display='none'"
+            />
+            <div class="gallery-overlay" aria-hidden="true">
+              <span class="gallery-caption">Store Interior</span>
+              <i class="fa-solid fa-expand gallery-expand-icon"></i>
+            </div>
+          </div>
+
+          <!-- Item 8 — Staff at Work -->
+          <div
+            class="gallery-item"
+            role="listitem"
+            data-index="7"
+            data-caption="Staff at Work"
+            aria-label="Gallery photo 8 of 8: Staff at Work — click to enlarge"
+          >
+            <div class="gallery-placeholder gallery-placeholder--navy" aria-hidden="true">
+              <i class="fa-solid fa-people-group gallery-placeholder__icon"></i>
+            </div>
+            <img
+              src="assets/images/store-8.jpg"
+              alt="Dedicated staff serving patients at Lifecare Medicos, Bhanga Bazar"
+              class="gallery-img"
+              loading="lazy"
+              onload="this.classList.add('loaded')"
+              onerror="this.style.display='none'"
+            />
+            <div class="gallery-overlay" aria-hidden="true">
+              <span class="gallery-caption">Staff at Work</span>
+              <i class="fa-solid fa-expand gallery-expand-icon"></i>
+            </div>
+          </div>
+
+        </div><!-- /gallery-grid -->
+
+        <!-- Note below gallery -->
+        <div class="gallery-footer-note">
+          <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+          <span>
+            Visit us at Bazar Road, Bhanga Bazar — or
+            <a href="https://wa.me/918473966611" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp Lifecare Medicos for directions">
+              WhatsApp us
+            </a>
+            for directions.
+          </span>
+        </div>
+
+      </div>
+    </section><!-- /gallery -->
+
+
+    <!-- ==========================================
+         CONTACT & LOCATION SECTION
+    =========================================== -->
+    <section id="contact" class="section contact-section" aria-labelledby="contactHeading">
+      <div class="container">
+
+        <!-- Section Header -->
+        <div class="section-heading">
+          <span class="label">
+            <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+            Find Us
+          </span>
+          <h2 id="contactHeading">Contact &amp; Location</h2>
+          <p>We're open 7 AM to 11 PM every day — come visit us or reach out any time</p>
+          <div class="section-heading__underline" aria-hidden="true"></div>
+        </div>
+
+        <!-- Two-column layout: info left, map right -->
+        <div class="contact-grid">
+
+          <!-- ====================================
+               LEFT COLUMN — Contact Info Cards
+          ===================================== -->
+          <div class="contact-cards">
+
+            <!-- Card 1: Address -->
+            <div class="contact-card">
+              <div class="contact-card__icon-wrap" aria-hidden="true">
+                <i class="fa-solid fa-location-dot"></i>
+              </div>
+              <div class="contact-card__body">
+                <span class="contact-card__label">Our Address</span>
+                <p class="contact-card__value">
+                  Lifecare Medicos, Bazar Road,<br>
+                  Bhanga Bazar, Sribhumi (Assam)
+                </p>
+                <a
+                  href="https://www.google.com/maps/search/Lifecare+Medicos+Bhanga+Bazar+Sribhumi+Assam"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="contact-card__link"
+                  aria-label="Get directions to Lifecare Medicos on Google Maps"
+                >
+                  <i class="fa-solid fa-diamond-turn-right" aria-hidden="true"></i>
+                  Get Directions
+                </a>
+              </div>
+            </div>
+
+            <!-- Card 2: Phone -->
+            <div class="contact-card">
+              <div class="contact-card__icon-wrap contact-card__icon-wrap--blue" aria-hidden="true">
+                <i class="fa-solid fa-phone"></i>
+              </div>
+              <div class="contact-card__body">
+                <span class="contact-card__label">Call Us</span>
+                <div class="contact-card__phones">
+                  <a
+                    href="tel:+918473966611"
+                    class="contact-card__phone-link"
+                    aria-label="Call Lifecare Medicos on 8473966611"
+                  >
+                    <i class="fa-solid fa-phone-volume" aria-hidden="true"></i>
+                    8473966611
+                  </a>
+                  <a
+                    href="tel:+917980560994"
+                    class="contact-card__phone-link"
+                    aria-label="Call Lifecare Medicos on 7980560994"
+                  >
+                    <i class="fa-solid fa-phone-volume" aria-hidden="true"></i>
+                    7980560994
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 3: Hours with live Open/Closed badge -->
+            <div class="contact-card">
+              <div class="contact-card__icon-wrap contact-card__icon-wrap--orange" aria-hidden="true">
+                <i class="fa-solid fa-clock"></i>
+              </div>
+              <div class="contact-card__body">
+                <span class="contact-card__label">Store Hours</span>
+                <p class="contact-card__value contact-card__value--hours">
+                  Monday to Sunday: 7:00 AM – 11:00 PM
+                </p>
+                <!-- Live badge -->
+                <span class="contact-status-badge" id="contactStatusBadge" aria-live="polite">
+                  <span class="contact-status-dot" id="contactStatusDot" aria-hidden="true"></span>
+                  <span id="contactStatusText">Checking…</span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Card 4: WhatsApp -->
+            <div class="contact-card contact-card--wa">
+              <div class="contact-card__icon-wrap contact-card__icon-wrap--wa" aria-hidden="true">
+                <i class="fa-brands fa-whatsapp"></i>
+              </div>
+              <div class="contact-card__body">
+                <span class="contact-card__label">WhatsApp</span>
+                <p class="contact-card__value">Fastest way to book an appointment or ask a question</p>
+                <a
+                  href="https://wa.me/918473966611"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="contact-card__wa-btn"
+                  aria-label="Chat with Lifecare Medicos on WhatsApp to book an appointment"
+                >
+                  <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                  Chat with us on WhatsApp
+                </a>
+              </div>
+            </div>
+
+          </div><!-- /contact-cards -->
+
+
+          <!-- ====================================
+               RIGHT COLUMN — Google Maps Embed
+          ===================================== -->
+          <div class="contact-map-wrap">
+
+            <!-- Map label -->
+            <div class="contact-map-label" aria-hidden="true">
+              <i class="fa-solid fa-map-location-dot"></i>
+              <span>Bhanga Bazar, Sribhumi, Assam</span>
+            </div>
+
+            <!--
+              ⚠️ REPLACE THIS IFRAME with the actual Google Maps embed code
+              from the client's pinned location.
+
+              Steps:
+                1. Open Google Maps, search for the exact store location
+                2. Click "Share" → "Embed a map"
+                3. Copy the full <iframe ...></iframe> code
+                4. Replace ONLY the iframe below with that code
+                5. Keep the surrounding .contact-map-wrap div intact
+            -->
+            <iframe
+              class="contact-map-iframe"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3588.5!2d92.3!3d24.7!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sBhanga+Bazar%2C+Sribhumi%2C+Assam!5e0!3m2!1sen!2sin!4v1"
+              width="100%"
+              height="400"
+              style="border:0;"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              title="Google Maps showing Lifecare Medicos location — Bazar Road, Bhanga Bazar, Sribhumi, Assam"
+              aria-label="Interactive map showing the location of Lifecare Medicos in Bhanga Bazar, Sribhumi, Assam"
+            ></iframe>
+
+            <!-- Directions CTA -->
+            <a
+              href="https://www.google.com/maps/search/Lifecare+Medicos+Bhanga+Bazar+Sribhumi+Assam"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="contact-map-directions-btn"
+              aria-label="Open Lifecare Medicos location in Google Maps for directions"
+            >
+              <i class="fa-solid fa-diamond-turn-right" aria-hidden="true"></i>
+              Open in Google Maps
+            </a>
+
+          </div><!-- /contact-map-wrap -->
+
+        </div><!-- /contact-grid -->
+
+      </div>
+    </section><!-- /contact -->
+
+  </main>
+
+
+  <!-- =============================================
+       SITE FOOTER
+  ============================================= -->
+  <footer class="site-footer" role="contentinfo">
+
+    <!-- ---- Top Footer: Three Columns ---- -->
+    <div class="container">
+      <div class="footer-top">
+
+        <!-- Column 1: Brand -->
+        <div class="footer-col footer-col--brand">
+
+          <!-- ⚠️ REPLACE: swap logo.png with the actual store logo -->
+          <a href="#hero" class="footer-brand" aria-label="Back to top — Lifecare Medicos">
+            <img
+              src="assets/images/logo.png"
+              alt="Lifecare Medicos logo"
+              class="footer-logo"
+              width="48"
+              height="48"
+              loading="lazy"
+            />
+            <div class="footer-brand-text">
+              <span class="footer-brand-name">Lifecare Medicos</span>
+              <span class="footer-brand-tagline">Your Health Is Our Priority</span>
+            </div>
+          </a>
+
+          <p class="footer-desc">
+            Your trusted medical store and specialist doctor consultation centre in
+            Bhanga Bazar, Sribhumi. Open every day, 7 AM to 11 PM.
+          </p>
+
+          <!-- Contact pills -->
+          <div class="footer-social">
+            <a href="tel:+918473966611" class="footer-social-pill" aria-label="Call Lifecare Medicos on 8473966611">
+              <i class="fa-solid fa-phone" aria-hidden="true"></i>
+            </a>
+            <a
+              href="https://wa.me/918473966611"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="footer-social-pill footer-social-pill--wa"
+              aria-label="Chat with Lifecare Medicos on WhatsApp"
+            >
+              <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+            </a>
+            <a
+              href="https://www.google.com/maps/search/Lifecare+Medicos+Bhanga+Bazar+Sribhumi+Assam"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="footer-social-pill footer-social-pill--map"
+              aria-label="Find Lifecare Medicos on Google Maps"
+            >
+              <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+            </a>
+          </div>
+
+        </div><!-- /col brand -->
+
+
+        <!-- Column 2: Quick Links -->
+        <div class="footer-col footer-col--links">
+          <h3 class="footer-col-heading">Quick Links</h3>
+          <ul class="footer-links" role="list">
+            <li>
+              <a href="#hero" class="footer-link">
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                Home
+              </a>
+            </li>
+            <li>
+              <a href="#doctors" class="footer-link">
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                Doctors
+              </a>
+            </li>
+            <li>
+              <a href="#about" class="footer-link">
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                About Us
+              </a>
+            </li>
+            <li>
+              <a href="#diagnostics" class="footer-link">
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                Diagnostics
+              </a>
+            </li>
+            <li>
+              <a href="#reviews" class="footer-link">
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                Reviews
+              </a>
+            </li>
+            <li>
+              <a href="#gallery" class="footer-link">
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                Gallery
+              </a>
+            </li>
+            <li>
+              <a href="#contact" class="footer-link">
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                Contact
+              </a>
+            </li>
+            <li>
+              <a href="admin.html" class="footer-link">
+                <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                Admin
+              </a>
+            </li>
+          </ul>
+        </div><!-- /col links -->
+
+
+        <!-- Column 3: Contact Info -->
+        <div class="footer-col footer-col--contact">
+          <h3 class="footer-col-heading">Contact Info</h3>
+
+          <div class="footer-contact-list">
+
+            <!-- Address -->
+            <div class="footer-contact-item">
+              <div class="footer-contact-item__icon" aria-hidden="true">
+                <i class="fa-solid fa-location-dot"></i>
+              </div>
+              <div class="footer-contact-item__text">
+                <span class="footer-contact-item__label">Address</span>
+                <span class="footer-contact-item__value">
+                  Lifecare Medicos, Bazar Road,<br>
+                  Bhanga Bazar, Sribhumi (Assam)
+                </span>
+              </div>
+            </div>
+
+            <!-- Phone 1 -->
+            <a href="tel:+918473966611" class="footer-contact-item footer-contact-item--link" aria-label="Call Lifecare Medicos on 8473966611">
+              <div class="footer-contact-item__icon" aria-hidden="true">
+                <i class="fa-solid fa-phone"></i>
+              </div>
+              <div class="footer-contact-item__text">
+                <span class="footer-contact-item__label">Phone</span>
+                <span class="footer-contact-item__value">8473966611</span>
+              </div>
+            </a>
+
+            <!-- Phone 2 -->
+            <a href="tel:+917980560994" class="footer-contact-item footer-contact-item--link" aria-label="Call Lifecare Medicos on 7980560994">
+              <div class="footer-contact-item__icon" aria-hidden="true">
+                <i class="fa-solid fa-phone"></i>
+              </div>
+              <div class="footer-contact-item__text">
+                <span class="footer-contact-item__label">Alternate</span>
+                <span class="footer-contact-item__value">7980560994</span>
+              </div>
+            </a>
+
+            <!-- Hours -->
+            <div class="footer-contact-item">
+              <div class="footer-contact-item__icon" aria-hidden="true">
+                <i class="fa-solid fa-clock"></i>
+              </div>
+              <div class="footer-contact-item__text">
+                <span class="footer-contact-item__label">Store Hours</span>
+                <span class="footer-contact-item__value">Mon – Sun: 7:00 AM – 11:00 PM</span>
+              </div>
+            </div>
+
+          </div><!-- /footer-contact-list -->
+
+        </div><!-- /col contact -->
+
+      </div><!-- /footer-top -->
+    </div><!-- /container -->
+
+
+    <!-- ---- Bottom Bar: Copyright ---- -->
+    <div class="footer-bottom">
+      <div class="container">
+        <div class="footer-bottom-inner">
+          <p class="footer-copyright">
+            &copy; 2024 Lifecare Medicos. All rights reserved.
+          </p>
+          <p class="footer-bottom-addr">
+            Bazar Road, Bhanga Bazar, Sribhumi, Assam
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </footer><!-- /site-footer -->
+
+
+  <!-- =============================================
+       DOCTOR DETAIL MODAL
+  ============================================= -->
+  <div
+    class="doctor-modal-overlay"
+    id="doctorModalOverlay"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modalDoctorName"
+    aria-hidden="true"
+  >
+    <div class="doctor-modal" id="doctorModal">
+
+      <!-- Close button -->
+      <button
+        class="doctor-modal__close"
+        id="doctorModalClose"
+        aria-label="Close doctor details panel"
+      >
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+
+      <!-- Modal content — injected by JS -->
+      <div class="doctor-modal__content" id="doctorModalContent">
+        <!-- Dynamic content goes here -->
+      </div>
+
+    </div>
+  </div><!-- /doctor modal -->
+
+
+  <!-- =============================================
+       GALLERY LIGHTBOX MODAL
+  ============================================= -->
+  <div
+    class="lightbox-overlay"
+    id="lightboxOverlay"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Photo lightbox — use left and right arrows to navigate, Escape to close"
+    aria-hidden="true"
+  >
+    <!-- Close button -->
+    <button
+      class="lightbox-close"
+      id="lightboxClose"
+      aria-label="Close photo lightbox"
+      type="button"
+    >
+      <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+    </button>
+
+    <!-- Previous image arrow -->
+    <button
+      class="lightbox-nav lightbox-nav--prev"
+      id="lightboxPrev"
+      aria-label="View previous photo"
+      type="button"
+    >
+      <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+    </button>
+
+    <!-- Image + Caption area -->
+    <div class="lightbox-body">
+      <div class="lightbox-img-wrap" id="lightboxImgWrap">
+        <!-- Injected by JS: <img> or placeholder fallback -->
+      </div>
+
+      <!-- Caption strip -->
+      <div class="lightbox-caption-bar">
+        <span class="lightbox-caption" id="lightboxCaption"></span>
+        <span class="lightbox-counter" id="lightboxCounter" aria-live="polite"></span>
+      </div>
+    </div>
+
+    <!-- Next image arrow -->
+    <button
+      class="lightbox-nav lightbox-nav--next"
+      id="lightboxNext"
+      aria-label="View next photo"
+      type="button"
+    >
+      <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+    </button>
+
+  </div><!-- /lightbox -->
+
+
+  <!-- Main JavaScript -->
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

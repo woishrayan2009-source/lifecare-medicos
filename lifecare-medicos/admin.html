@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel — Lifecare Medicos</title>
+
+  <!-- ⚠️ IMPORTANT: Change username and password before going live.
+       Search for 'lifecare_admin' and 'medicos2024' in admin.js -->
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <!-- Admin CSS -->
+  <link rel="stylesheet" href="assets/css/admin.css" />
+</head>
+<body>
+
+  <!-- ===================================================
+       LOGIN SCREEN
+  =================================================== -->
+  <div id="loginScreen" class="login-screen">
+    <div class="login-card">
+      <div class="login-logo">
+        <div class="login-logo-icon"><i class="fas fa-heart-pulse"></i></div>
+        <h1>Lifecare Medicos</h1>
+        <p>Admin Portal</p>
+      </div>
+
+      <div id="loginError" class="login-error hidden">
+        <i class="fas fa-circle-exclamation"></i>
+        <span>Invalid credentials. Please try again.</span>
+      </div>
+
+      <div class="form-group">
+        <label for="adminUser"><i class="fas fa-user"></i> Username</label>
+        <input type="text" id="adminUser" placeholder="Enter username" autocomplete="username" />
+      </div>
+      <div class="form-group">
+        <label for="adminPass"><i class="fas fa-lock"></i> Password</label>
+        <div class="password-wrap">
+          <input type="password" id="adminPass" placeholder="Enter password" autocomplete="current-password" />
+          <button type="button" class="toggle-pass" onclick="togglePassword()">
+            <i class="fas fa-eye" id="eyeIcon"></i>
+          </button>
+        </div>
+      </div>
+      <button class="btn-login" onclick="handleLogin()">
+        <i class="fas fa-right-to-bracket"></i> Login
+      </button>
+
+      <p class="login-back">
+        <a href="index.html"><i class="fas fa-arrow-left"></i> Back to website</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- ===================================================
+       ADMIN DASHBOARD
+  =================================================== -->
+  <div id="adminDashboard" class="admin-wrap hidden">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-logo-icon"><i class="fas fa-heart-pulse"></i></div>
+        <div>
+          <span class="sidebar-title">Lifecare</span>
+          <span class="sidebar-sub">Admin Panel</span>
+        </div>
+        <button class="sidebar-close-btn" id="sidebarCloseBtn" onclick="toggleSidebar()">
+          <i class="fas fa-xmark"></i>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active" data-section="dashboard" onclick="switchSection('dashboard', this)">
+          <i class="fas fa-gauge-high"></i><span>Dashboard</span>
+        </a>
+        <a href="#" class="nav-item" data-section="medicines" onclick="switchSection('medicines', this)">
+          <i class="fas fa-pills"></i><span>Medicine Stock</span>
+        </a>
+        <a href="#" class="nav-item" data-section="appointments" onclick="switchSection('appointments', this)">
+          <i class="fas fa-calendar-check"></i><span>Appointments</span>
+        </a>
+        <a href="#" class="nav-item" data-section="billing" onclick="switchSection('billing', this)">
+          <i class="fas fa-file-invoice-dollar"></i><span>Billing</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="btn-logout-sidebar" onclick="handleLogout()">
+          <i class="fas fa-right-from-bracket"></i><span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Overlay for mobile sidebar -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <!-- Main area -->
+    <div class="main-area">
+
+      <!-- Top Header -->
+      <header class="top-header">
+        <div class="header-left">
+          <button class="hamburger-btn" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+          </button>
+          <h2 class="section-title-header" id="sectionTitleHeader">Dashboard</h2>
+        </div>
+        <div class="header-right">
+          <span class="logged-in-badge"><i class="fas fa-circle"></i> lifecare_admin</span>
+          <button class="btn-logout-top" onclick="handleLogout()">
+            <i class="fas fa-right-from-bracket"></i> Logout
+          </button>
+        </div>
+      </header>
+
+      <!-- Mobile tab bar -->
+      <div class="mobile-tabs">
+        <button class="tab-btn active" data-section="dashboard" onclick="switchSection('dashboard', this)">
+          <i class="fas fa-gauge-high"></i><span>Home</span>
+        </button>
+        <button class="tab-btn" data-section="medicines" onclick="switchSection('medicines', this)">
+          <i class="fas fa-pills"></i><span>Stock</span>
+        </button>
+        <button class="tab-btn" data-section="appointments" onclick="switchSection('appointments', this)">
+          <i class="fas fa-calendar-check"></i><span>Appts</span>
+        </button>
+        <button class="tab-btn" data-section="billing" onclick="switchSection('billing', this)">
+          <i class="fas fa-file-invoice-dollar"></i><span>Billing</span>
+        </button>
+      </div>
+
+      <!-- =====================
+           SECTION: DASHBOARD
+      ===================== -->
+      <section class="content-section active" id="sec-dashboard">
+        <div class="section-header">
+          <h2>Dashboard Overview</h2>
+          <p class="section-date" id="dashDate"></p>
+        </div>
+
+        <!-- Stat cards -->
+        <div class="stat-grid">
+          <div class="stat-card green">
+            <div class="stat-icon"><i class="fas fa-pills"></i></div>
+            <div class="stat-info">
+              <div class="stat-num" id="statTotal">0</div>
+              <div class="stat-label">Total Medicines</div>
+            </div>
+          </div>
+          <div class="stat-card orange">
+            <div class="stat-icon"><i class="fas fa-triangle-exclamation"></i></div>
+            <div class="stat-info">
+              <div class="stat-num" id="statLow">0</div>
+              <div class="stat-label">Low Stock (< 10)</div>
+            </div>
+          </div>
+          <div class="stat-card red">
+            <div class="stat-icon"><i class="fas fa-calendar-xmark"></i></div>
+            <div class="stat-info">
+              <div class="stat-num" id="statExpiring">0</div>
+              <div class="stat-label">Expiring Soon (30 days)</div>
+            </div>
+          </div>
+          <div class="stat-card blue">
+            <div class="stat-icon"><i class="fas fa-user-clock"></i></div>
+            <div class="stat-info">
+              <div class="stat-num" id="statAppts">0</div>
+              <div class="stat-label">Today's Appointments</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick actions -->
+        <div class="quick-actions-card">
+          <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+          <div class="quick-actions-row">
+            <button class="quick-btn green" onclick="switchSection('medicines', null); openMedicineModal()">
+              <i class="fas fa-plus"></i> Add Medicine
+            </button>
+            <button class="quick-btn blue" onclick="switchSection('appointments', null); openApptModal()">
+              <i class="fas fa-calendar-plus"></i> Add Appointment
+            </button>
+            <button class="quick-btn orange" onclick="printTodayReport()">
+              <i class="fas fa-print"></i> Print Today's Report
+            </button>
+          </div>
+        </div>
+
+        <!-- Recent alerts -->
+        <div class="alerts-card">
+          <h3><i class="fas fa-bell"></i> Stock Alerts</h3>
+          <div id="stockAlerts" class="alerts-list"></div>
+        </div>
+      </section>
+
+      <!-- =====================
+           SECTION: MEDICINES
+      ===================== -->
+      <section class="content-section" id="sec-medicines">
+        <div class="section-header">
+          <h2>Medicine Stock</h2>
+          <button class="btn-primary" onclick="openMedicineModal()">
+            <i class="fas fa-plus"></i> Add Medicine
+          </button>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="table-toolbar">
+          <div class="search-wrap">
+            <i class="fas fa-magnifying-glass"></i>
+            <input type="text" id="medSearch" placeholder="Search medicines…" oninput="renderMedicinesTable()" />
+          </div>
+          <div class="filter-group">
+            <select id="medFilter" onchange="renderMedicinesTable()">
+              <option value="all">All Items</option>
+              <option value="low">Low Stock</option>
+              <option value="expiring">Expiring Soon</option>
+              <option value="out">Out of Stock</option>
+            </select>
+            <select id="medSort" onchange="renderMedicinesTable()">
+              <option value="name">Sort: Name</option>
+              <option value="stock">Sort: Stock Qty</option>
+              <option value="expiry">Sort: Expiry Date</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-wrap">
+          <table class="data-table" id="medTable">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Medicine Name</th>
+                <th>Category</th>
+                <th>Stock Qty</th>
+                <th>Unit</th>
+                <th>Expiry Date</th>
+                <th>Availability</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="medTableBody">
+            </tbody>
+          </table>
+          <div class="empty-state hidden" id="medEmpty">
+            <i class="fas fa-box-open"></i>
+            <p>No medicines found.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================
+           SECTION: APPOINTMENTS
+      ===================== -->
+      <section class="content-section" id="sec-appointments">
+        <div class="section-header">
+          <h2>Appointments Log</h2>
+          <button class="btn-primary" onclick="openApptModal()">
+            <i class="fas fa-plus"></i> Add Appointment
+          </button>
+        </div>
+
+        <!-- Filters -->
+        <div class="table-toolbar">
+          <div class="search-wrap">
+            <i class="fas fa-magnifying-glass"></i>
+            <input type="text" id="apptSearch" placeholder="Search by patient name…" oninput="renderApptsTable()" />
+          </div>
+          <div class="filter-group">
+            <select id="apptDoctorFilter" onchange="renderApptsTable()">
+              <option value="all">All Doctors</option>
+              <option value="Dr. Sandip Roy">Dr. Sandip Roy</option>
+              <option value="Dr. Shirsendu Roy">Dr. Shirsendu Roy</option>
+              <option value="Dr. Intekhab Alam">Dr. Intekhab Alam</option>
+              <option value="Dr. Saddam Hussain">Dr. Saddam Hussain</option>
+            </select>
+            <input type="date" id="apptDateFilter" onchange="renderApptsTable()" title="Filter by date" />
+            <select id="apptStatusFilter" onchange="renderApptsTable()">
+              <option value="all">All Status</option>
+              <option value="Scheduled">Scheduled</option>
+              <option value="Completed">Completed</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="data-table" id="apptTable">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Patient Name</th>
+                <th>Phone</th>
+                <th>Doctor</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Status</th>
+                <th>Notes</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="apptTableBody"></tbody>
+          </table>
+          <div class="empty-state hidden" id="apptEmpty">
+            <i class="fas fa-calendar-xmark"></i>
+            <p>No appointments found.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================
+           SECTION: BILLING
+      ===================== -->
+      <section class="content-section" id="sec-billing">
+        <div class="section-header">
+          <h2>Billing & Receipts</h2>
+        </div>
+
+        <div class="billing-layout">
+          <!-- Billing form -->
+          <div class="billing-form-card">
+            <h3><i class="fas fa-pen-to-square"></i> New Bill</h3>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Patient Name *</label>
+                <input type="text" id="billPatient" placeholder="Full name" />
+              </div>
+              <div class="form-group">
+                <label>Phone</label>
+                <input type="tel" id="billPhone" placeholder="Mobile number" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Doctor (optional)</label>
+                <select id="billDoctor">
+                  <option value="">— Select Doctor —</option>
+                  <option>Dr. Sandip Roy</option>
+                  <option>Dr. Shirsendu Roy</option>
+                  <option>Dr. Intekhab Alam</option>
+                  <option>Dr. Saddam Hussain</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Date</label>
+                <input type="date" id="billDate" />
+              </div>
+            </div>
+
+            <!-- Line items -->
+            <div class="line-items-header">
+              <strong>Items</strong>
+              <button class="btn-sm-green" onclick="addBillItem()">
+                <i class="fas fa-plus"></i> Add Item
+              </button>
+            </div>
+            <div id="lineItemsContainer"></div>
+
+            <!-- Totals -->
+            <div class="bill-totals">
+              <div class="totals-row">
+                <span>Subtotal</span>
+                <span id="billSubtotal">₹0.00</span>
+              </div>
+              <div class="totals-row">
+                <span>
+                  Discount
+                  <select id="discountType" onchange="calcBillTotal()" class="discount-type-select">
+                    <option value="flat">₹</option>
+                    <option value="percent">%</option>
+                  </select>
+                </span>
+                <input type="number" id="billDiscount" value="0" min="0" oninput="calcBillTotal()" class="discount-input" />
+              </div>
+              <div class="totals-row">
+                <span>Tax (GST %)</span>
+                <input type="number" id="billTax" value="0" min="0" oninput="calcBillTotal()" class="discount-input" />
+              </div>
+              <div class="totals-row grand-total">
+                <span>Total</span>
+                <span id="billTotal">₹0.00</span>
+              </div>
+            </div>
+
+            <button class="btn-primary full-width" onclick="generateReceipt()">
+              <i class="fas fa-file-invoice"></i> Generate Receipt
+            </button>
+          </div>
+
+          <!-- Receipt preview -->
+          <div class="receipt-preview-card" id="receiptPreviewCard">
+            <div class="receipt-actions">
+              <button class="btn-primary" onclick="printReceipt()">
+                <i class="fas fa-print"></i> Print Receipt
+              </button>
+              <small class="pdf-tip"><i class="fas fa-info-circle"></i> To save as PDF: Print → "Save as PDF"</small>
+            </div>
+            <div id="receiptContent" class="receipt-content">
+              <div class="receipt-placeholder">
+                <i class="fas fa-file-invoice-dollar"></i>
+                <p>Fill in bill details and click<br><strong>"Generate Receipt"</strong></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- end .main-area -->
+  </div><!-- end #adminDashboard -->
+
+
+  <!-- ===================================================
+       MEDICINE MODAL
+  =================================================== -->
+  <div class="modal-overlay hidden" id="medicineModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="medModalTitle">Add Medicine</h3>
+        <button class="modal-close" onclick="closeMedicineModal()"><i class="fas fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="medEditId" />
+        <div class="form-row">
+          <div class="form-group">
+            <label>Medicine Name *</label>
+            <input type="text" id="medName" placeholder="e.g. Paracetamol 500mg" />
+          </div>
+          <div class="form-group">
+            <label>Category *</label>
+            <select id="medCategory">
+              <option value="">— Select —</option>
+              <option>Tablet</option>
+              <option>Capsule</option>
+              <option>Syrup</option>
+              <option>Injection</option>
+              <option>Cream</option>
+              <option>Drop</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Stock Quantity *</label>
+            <input type="number" id="medQty" placeholder="0" min="0" />
+          </div>
+          <div class="form-group">
+            <label>Unit *</label>
+            <select id="medUnit">
+              <option value="">— Select —</option>
+              <option>Strips</option>
+              <option>Bottles</option>
+              <option>Pieces</option>
+              <option>Vials</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Expiry Date *</label>
+            <input type="date" id="medExpiry" />
+          </div>
+          <div class="form-group">
+            <label>Availability</label>
+            <div class="toggle-wrap">
+              <label class="toggle-switch">
+                <input type="checkbox" id="medAvail" checked />
+                <span class="toggle-slider"></span>
+              </label>
+              <span id="medAvailLabel" class="toggle-label">Available</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group full-width">
+          <label>Notes (optional)</label>
+          <textarea id="medNotes" rows="2" placeholder="e.g. Keep refrigerated…"></textarea>
+        </div>
+        <div class="modal-error hidden" id="medModalError"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeMedicineModal()">Cancel</button>
+        <button class="btn-primary" onclick="saveMedicine()">
+          <i class="fas fa-floppy-disk"></i> Save Medicine
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================
+       APPOINTMENT MODAL
+  =================================================== -->
+  <div class="modal-overlay hidden" id="apptModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="apptModalTitle">Add Appointment</h3>
+        <button class="modal-close" onclick="closeApptModal()"><i class="fas fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="apptEditId" />
+        <div class="form-row">
+          <div class="form-group">
+            <label>Patient Name *</label>
+            <input type="text" id="apptPatient" placeholder="Full name" />
+          </div>
+          <div class="form-group">
+            <label>Phone Number *</label>
+            <input type="tel" id="apptPhone" placeholder="10-digit number" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Doctor *</label>
+            <select id="apptDoctor">
+              <option value="">— Select Doctor —</option>
+              <option>Dr. Sandip Roy</option>
+              <option>Dr. Shirsendu Roy</option>
+              <option>Dr. Intekhab Alam</option>
+              <option>Dr. Saddam Hussain</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Status *</label>
+            <select id="apptStatus">
+              <option>Scheduled</option>
+              <option>Completed</option>
+              <option>Cancelled</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Date *</label>
+            <input type="date" id="apptDate" />
+          </div>
+          <div class="form-group">
+            <label>Time *</label>
+            <input type="time" id="apptTime" />
+          </div>
+        </div>
+        <div class="form-group full-width">
+          <label>Notes (optional)</label>
+          <textarea id="apptNotes" rows="2" placeholder="Reason for visit, special notes…"></textarea>
+        </div>
+        <div class="modal-error hidden" id="apptModalError"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeApptModal()">Cancel</button>
+        <button class="btn-primary" onclick="saveAppt()">
+          <i class="fas fa-floppy-disk"></i> Save Appointment
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================
+       DELETE CONFIRM MODAL
+  =================================================== -->
+  <div class="modal-overlay hidden" id="confirmModal">
+    <div class="modal-card modal-sm">
+      <div class="modal-header danger">
+        <h3><i class="fas fa-trash-can"></i> Confirm Delete</h3>
+        <button class="modal-close" onclick="closeConfirm()"><i class="fas fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <p id="confirmMsg">Are you sure you want to delete this item?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeConfirm()">Cancel</button>
+        <button class="btn-danger" id="confirmYesBtn">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Print report hidden div -->
+  <div id="printReport" class="print-only"></div>
+
+  <!-- Admin JS -->
+  <script src="assets/js/admin.js"></script>
+</body>
+</html>
