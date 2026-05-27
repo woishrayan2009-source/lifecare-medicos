@@ -235,7 +235,7 @@
       avatarInitials:  'SR',
       photoSrc:        'assets/images/doctors/dr-shirsendu.jpg',
       treatments:      [],                  // General medicine — no fixed list
-      extraInfo:       'General consultations covering fever, infections, diabetes management, hypertension, and acute illnesses.',
+      extraInfo:       'General consultations covering fever, infections, Cough, Cold & Flu, Diabetes, Blood pressure, Thyroid disorders, Gastric & acidity problems, Allergy & skin issues, Asthma & respiratory problems, General weakness & fatigue, General medicine related issues.',
     },
     {
       id:              'intekhab',
@@ -261,7 +261,7 @@
       department:      'Ayurvedic Medicine (BAMS)',
       registrationNo:  '1423 (Assam State Council of Indian Medicine)',
       consultationDay: 'daily',             // Available every day
-      consultationTime:'Available Daily — all days',
+      consultationTime:'Available Daily — all days (24x7)',
       phone:           ['8473966611', '7980560994'],
       avatarColor:     '#e65100',           // orange
       avatarInitials:  'SH',
