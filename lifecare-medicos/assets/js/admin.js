@@ -1,9 +1,9 @@
 /* ===================================================
-   Lifecare Medicos — Admin Panel JavaScript
+   lifecure Medicos — Admin Panel JavaScript
    admin.js
 
    ⚠️ IMPORTANT: Change credentials before going live!
-      Username: 'lifecare_admin'  → change to your own
+      Username: 'lifecure_admin'  → change to your own
       Password: 'medicos2024'     → change to a strong password
 =================================================== */
 
@@ -12,16 +12,16 @@
 /* ===================================================
    CREDENTIALS  ← CHANGE BEFORE GOING LIVE
 =================================================== */
-const ADMIN_USER = 'lifecare_admin';  // ⚠️ Change this
+const ADMIN_USER = 'lifecure_admin';  // ⚠️ Change this
 const ADMIN_PASS = 'atiqur@medicos';     // ⚠️ Change this
 
 /* ===================================================
    STORAGE KEYS
 =================================================== */
-const KEY_MEDICINES    = 'lifecare_medicines';
-const KEY_APPOINTMENTS = 'lifecare_appointments';
-const KEY_BILL_NUM     = 'lifecare_bill_number';
-const SESSION_KEY      = 'lifecare_admin_logged_in';
+const KEY_MEDICINES    = 'lifecure_medicines';
+const KEY_APPOINTMENTS = 'lifecure_appointments';
+const KEY_BILL_NUM     = 'lifecure_bill_number';
+const SESSION_KEY      = 'lifecure_admin_logged_in';
 
 /* ===================================================
    UTILITY HELPERS
@@ -771,7 +771,7 @@ function generateReceipt() {
   const receiptHTML = `
     <div class="receipt-body">
       <div class="receipt-letterhead">
-        <h2>Lifecare Medicos</h2>
+        <h2>lifecure Medicos</h2>
         <p>Bazar Road, Bhanga Bazar, Sribhumi (Assam)</p>
         <p>Phone: 8473966611 / 7980560994 &nbsp;|&nbsp; Open: 7 AM – 11 PM</p>
       </div>
@@ -803,7 +803,7 @@ function generateReceipt() {
         <div class="receipt-grand">Total: ${inr(total)}</div>
       </div>
       <div class="receipt-footer">
-        Thank you for choosing Lifecare Medicos. Get well soon!<br>
+        Thank you for choosing lifecure Medicos. Get well soon!<br>
         "Your Health Is Our Priority"
       </div>
     </div>`;
@@ -827,7 +827,7 @@ function printReceipt() {
     <html>
     <head>
       <meta charset="UTF-8">
-      <title>Receipt — Lifecare Medicos</title>
+      <title>Receipt — lifecure Medicos</title>
       <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
       <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -905,7 +905,7 @@ function printTodayReport() {
       </style>
     </head>
     <body>
-      <h1>Lifecare Medicos — Daily Report</h1>
+      <h1>lifecure Medicos — Daily Report</h1>
       <p class="sub">${dateStr}</p>
 
       <h2>Today's Appointments (${appts.length})</h2>
@@ -922,7 +922,7 @@ function printTodayReport() {
 
       <p><strong>Expiring within 30 days:</strong> ${expSoon.length} item(s)</p>
 
-      <div class="footer">Printed from Lifecare Medicos Admin Panel &nbsp;|&nbsp; "Your Health Is Our Priority"</div>
+      <div class="footer">Printed from lifecure Medicos Admin Panel &nbsp;|&nbsp; "Your Health Is Our Priority"</div>
     </body>
     </html>`);
   printWin.document.close();

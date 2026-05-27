@@ -1,14 +1,14 @@
-# Lifecare Medicos — Website
+# lifecure Medicos — Website
 
 > **Your Health Is Our Priority**
 
-A complete, production-ready static website for **Lifecare Medicos** — a medical store and doctor consultation center located at Bhanga Bazar, Sribhumi, Assam, India.
+A complete, production-ready static website for **lifecure Medicos** — a medical store and doctor consultation center located at Bhanga Bazar, Sribhumi, Assam, India.
 
 ---
 
 ## 📋 About
 
-Lifecare Medicos offers:
+lifecure Medicos offers:
 - A full-service medical/pharmacy store
 - On-site specialist doctor consultations (Skin, General Medicine, Heart, Ayurveda)
 - Open **7 AM to 11 PM**, all days
@@ -20,7 +20,7 @@ This website is a **pure static site** — no backend, no database, no build too
 ## 🗂️ Folder Structure
 
 ```
-lifecare-medicos/
+lifecure-medicos/
 ├── index.html          # Main public-facing website
 ├── admin.html          # Admin panel (medicine stock + appointments)
 ├── manifest.json       # PWA manifest
@@ -65,13 +65,13 @@ No npm. No build step. No frameworks.
 
 1. Go to [netlify.com](https://netlify.com) and sign in (or create a free account).
 2. In your dashboard, click **"Add new site"** → **"Deploy manually"**.
-3. Drag and drop the entire `lifecare-medicos/` folder onto the upload area.
-4. Your site goes live instantly with a Netlify URL (e.g. `lifecare-medicos.netlify.app`).
-5. To use a custom domain (e.g. `lifecaremedicos.in`), go to **Site settings → Domain management**.
+3. Drag and drop the entire `lifecure-medicos/` folder onto the upload area.
+4. Your site goes live instantly with a Netlify URL (e.g. `lifecure-medicos.netlify.app`).
+5. To use a custom domain (e.g. `lifecuremedicos.in`), go to **Site settings → Domain management**.
 
 ### Option B — GitHub + Continuous Deployment
 
-1. Push the `lifecare-medicos/` folder to a GitHub repository.
+1. Push the `lifecure-medicos/` folder to a GitHub repository.
 2. In Netlify, click **"Add new site"** → **"Import an existing project"** → connect GitHub.
 3. Select the repository; set **Publish directory** to `/` (root).
 4. Click **Deploy site**.
@@ -82,7 +82,7 @@ No npm. No build step. No frameworks.
 ## 🔑 Admin Panel
 
 - **URL:** `/admin.html`
-- **Username:** `lifecare_admin`
+- **Username:** `lifecure_admin`
 - **Password:** `medicos2024`
 
 > ⚠️ **Change these credentials before going live!** They are hardcoded in `assets/js/admin.js`. Search for `ADMIN_USERNAME` and `ADMIN_PASSWORD` constants and update them.
@@ -95,7 +95,7 @@ The admin panel uses **browser localStorage** — data is saved in the visitor's
 
 | Field        | Value                                    |
 |--------------|------------------------------------------|
-| Store Name   | Lifecare Medicos                         |
+| Store Name   | lifecure Medicos                         |
 | Address      | Bazar Road, Bhanga Bazar, Sribhumi, Assam |
 | Phone 1      | 8473966611                               |
 | Phone 2      | 7980560994                               |
@@ -121,4 +121,4 @@ The admin panel uses **browser localStorage** — data is saved in the visitor's
 
 ## 📄 License
 
-This website was built exclusively for **Lifecare Medicos**, Bhanga Bazar, Sribhumi, Assam. All rights reserved.
+This website was built exclusively for **lifecure Medicos**, Bhanga Bazar, Sribhumi, Assam. All rights reserved.

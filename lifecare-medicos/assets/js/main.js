@@ -1,5 +1,5 @@
 /**
- * Lifecare Medicos — Main JavaScript
+ * lifecure Medicos — Main JavaScript
  * assets/js/main.js
  *
  * Modules:
@@ -1065,7 +1065,7 @@
   -------------------------------------------------- */
   const REVIEWS = [
     {
-      text:     "Lifecare Medicos has been our family's trusted pharmacy for years. The staff is very helpful and the medicines are always genuine.",
+      text:     "lifecure Medicos has been our family's trusted pharmacy for years. The staff is very helpful and the medicines are always genuine.",
       name:     'Rajesh Das',
       location: 'Bhanga',
     },
@@ -1738,7 +1738,7 @@
      INIT LOG
   ============================================= */
   console.log(
-    '%cLifecare Medicos — Loaded ✓ (Step 9: Final Polish, SEO, Accessibility)',
+    '%clifecure Medicos — Loaded ✓ (Step 9: Final Polish, SEO, Accessibility)',
     'color: #1a6b4a; font-weight: bold; font-size: 13px;'
   );
 
