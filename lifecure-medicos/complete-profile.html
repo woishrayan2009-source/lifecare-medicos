@@ -446,8 +446,8 @@
   <script src="assets/js/auth.js"></script>
 
   <script>
-    // Use window.firebaseServices directly to avoid naming conflicts
-    const firebaseServices = window.firebaseServices || {};
+    // Wait for Firebase to initialize
+    let firebaseServices = window.firebaseServices || {};
     
     const form = document.getElementById('profileForm');
     const errorMessage = document.getElementById('errorMessage');
@@ -461,6 +461,7 @@
 
     // Load existing profile data
     async function loadProfileData() {
+      firebaseServices = window.firebaseServices || firebaseServices;
       const userId = getCurrentUserId();
       if (!userId) return;
 
@@ -533,6 +534,7 @@
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
+      firebaseServices = window.firebaseServices || firebaseServices;
       const userId = getCurrentUserId();
       if (!userId) {
         errorMessage.textContent = 'Please log in first';
@@ -611,13 +613,15 @@
       }
     });
 
-    async function skipProfileCompletion() {
+    // Expose to global scope for onclick handler
+    window.skipProfileCompletion = async function() {
       const userId = getCurrentUserId();
       if (!userId) {
         alert('Please log in first');
         return;
       }
 
+      firebaseServices = window.firebaseServices || firebaseServices;
       const db = firebaseServices.db;
       if (!db) {
         alert('Firebase not initialized');
@@ -635,7 +639,7 @@
         console.error('Skip error:', error);
         alert('Error: ' + error.message);
       }
-    }
+    };
 
     // Initialize on load
     window.addEventListener('load', loadProfileData);
