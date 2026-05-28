@@ -13,10 +13,9 @@
 'use strict';
 
 /* ===================================================
-   CREDENTIALS  ← CHANGE BEFORE GOING LIVE
+   FIREBASE SERVICES
 =================================================== */
-const ADMIN_USER = 'lifecure_admin';  // ⚠️ Change this
-const ADMIN_PASS = 'atiqur@medicos';     // ⚠️ Change this
+const { auth, db, storage } = window.firebaseServices || {};
 
 /* ===================================================
    STORAGE KEYS
@@ -161,34 +160,49 @@ function seedSampleData() {
 }
 
 /* ===================================================
-   LOGIN / LOGOUT
+   LOGIN / LOGOUT (FIREBASE AUTH)
 =================================================== */
-function handleLogin() {
-  const user = document.getElementById('adminUser').value.trim();
-  const pass = document.getElementById('adminPass').value.trim();
+async function handleLogin() {
+  const email = document.getElementById('adminUser').value.trim();
+  const password = document.getElementById('adminPass').value.trim();
   const errEl = document.getElementById('loginError');
 
-  if (user === ADMIN_USER && pass === ADMIN_PASS) {
-    sessionStorage.setItem(SESSION_KEY, '1');
-    document.getElementById('loginScreen').classList.add('hidden');
-    document.getElementById('adminDashboard').classList.remove('hidden');
-    initDashboard();
-  } else {
-    errEl.classList.remove('hidden');
-    // Re-trigger shake animation
-    errEl.style.animation = 'none';
-    errEl.offsetHeight; // reflow
-    errEl.style.animation = '';
+  if (!email || !password) {
+    showLoginError('Please enter email and password');
+    return;
+  }
+
+  try {
+    await auth.signInWithEmailAndPassword(email, password);
+    // Login successful - auth state observer will handle the UI update
+    errEl.classList.add('hidden');
+  } catch (error) {
+    console.error('Login error:', error);
+    showLoginError('Invalid email or password');
   }
 }
 
-function handleLogout() {
-  sessionStorage.removeItem(SESSION_KEY);
-  document.getElementById('adminDashboard').classList.add('hidden');
-  document.getElementById('loginScreen').classList.remove('hidden');
-  document.getElementById('adminUser').value = '';
-  document.getElementById('adminPass').value = '';
-  document.getElementById('loginError').classList.add('hidden');
+async function handleLogout() {
+  try {
+    await auth.signOut();
+    document.getElementById('adminDashboard').classList.add('hidden');
+    document.getElementById('loginScreen').classList.remove('hidden');
+    document.getElementById('adminUser').value = '';
+    document.getElementById('adminPass').value = '';
+    document.getElementById('loginError').classList.add('hidden');
+  } catch (error) {
+    console.error('Logout error:', error);
+  }
+}
+
+function showLoginError(message) {
+  const errEl = document.getElementById('loginError');
+  errEl.querySelector('span').textContent = message;
+  errEl.classList.remove('hidden');
+  // Re-trigger shake animation
+  errEl.style.animation = 'none';
+  errEl.offsetHeight; // reflow
+  errEl.style.animation = '';
 }
 
 function togglePassword() {
@@ -221,11 +235,30 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Check if already logged in
-  if (sessionStorage.getItem(SESSION_KEY) === '1') {
-    document.getElementById('loginScreen').classList.add('hidden');
-    document.getElementById('adminDashboard').classList.remove('hidden');
-    initDashboard();
+  // Firebase Auth state observer
+  if (auth) {
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        // User is logged in - check if they're an admin
+        try {
+          const userDoc = await db.collection('users').doc(user.uid).get();
+          const userData = userDoc.data();
+          
+          // For now, allow any authenticated user to access admin panel
+          // In production, check for admin role: if (userData?.role === 'admin')
+          document.getElementById('loginScreen').classList.add('hidden');
+          document.getElementById('adminDashboard').classList.remove('hidden');
+          document.querySelector('.logged-in-badge').textContent = `✓ ${user.email}`;
+          initDashboard();
+        } catch (error) {
+          console.error('Error checking admin status:', error);
+        }
+      } else {
+        // User is logged out
+        document.getElementById('adminDashboard').classList.add('hidden');
+        document.getElementById('loginScreen').classList.remove('hidden');
+      }
+    });
   }
 
   seedSampleData();

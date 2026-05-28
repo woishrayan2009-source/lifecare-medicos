@@ -446,7 +446,9 @@
   <script src="assets/js/auth.js"></script>
 
   <script>
-    const { auth, db, storage } = window.firebaseServices;
+    // Use window.firebaseServices directly to avoid naming conflicts
+    const firebaseServices = window.firebaseServices || {};
+    
     const form = document.getElementById('profileForm');
     const errorMessage = document.getElementById('errorMessage');
     const successMessage = document.getElementById('successMessage');
@@ -461,6 +463,12 @@
     async function loadProfileData() {
       const userId = getCurrentUserId();
       if (!userId) return;
+
+      const db = firebaseServices.db;
+      if (!db) {
+        console.error('Firestore not initialized');
+        return;
+      }
 
       const userDoc = await db.collection('users').doc(userId).get();
       const data = userDoc.data();
@@ -488,17 +496,26 @@
     // Photo preview
     photoInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
-      if (file && file.size <= 5 * 1024 * 1024) {
-        photoFile = file;
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          photoPreview.innerHTML = `<img src="${event.target.result}" alt="Preview" />`;
-        };
-        reader.readAsDataURL(file);
-      } else {
+      if (!file) return;
+
+      if (file.size > 5 * 1024 * 1024) {
         errorMessage.textContent = 'File must be less than 5MB';
         errorMessage.classList.add('show');
+        return;
       }
+
+      if (!file.type.startsWith('image/')) {
+        errorMessage.textContent = 'Please select an image file';
+        errorMessage.classList.add('show');
+        return;
+      }
+
+      photoFile = file;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        photoPreview.innerHTML = `<img src="${event.target.result}" alt="Preview" />`;
+      };
+      reader.readAsDataURL(file);
     });
 
     // Update progress
@@ -523,8 +540,17 @@
         return;
       }
 
+      const db = firebaseServices.db;
+      const storage = firebaseServices.storage;
+      
+      if (!db || !storage) {
+        errorMessage.textContent = 'Firebase services not initialized';
+        errorMessage.classList.add('show');
+        return;
+      }
+
       saveBtn.disabled = true;
-      saveBtn.innerHTML = '<span style="display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: white; animation: spin 0.8s linear infinite; margin-right: 8px;"></span> Saving...';
+      saveBtn.innerHTML = '<span style="display: inline-flex; align-items: center; gap: 8px;"><span style="display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: white; animation: spin 0.8s linear infinite;"></span> Saving...</span>';
       errorMessage.classList.remove('show');
       successMessage.classList.remove('show');
 
@@ -533,26 +559,33 @@
 
         // Upload photo if selected
         if (photoFile) {
-          const storageRef = storage.ref(`profiles/${userId}/${photoFile.name}`);
-          await storageRef.put(photoFile);
-          photoURL = await storageRef.getDownloadURL();
+          try {
+            const timestamp = Date.now();
+            const storageRef = storage.ref(`profiles/${userId}/${timestamp}-${photoFile.name}`);
+            await storageRef.put(photoFile);
+            photoURL = await storageRef.getDownloadURL();
+          } catch (photoError) {
+            console.error('Photo upload error:', photoError);
+            // Continue without photo if upload fails
+          }
         }
 
         // Update user profile
         const updateData = {
-          name: document.getElementById('name').value,
-          phone: document.getElementById('phone').value,
-          dob: document.getElementById('dob').value,
-          gender: document.getElementById('gender').value,
-          bloodGroup: document.getElementById('bloodGroup').value,
-          allergies: document.getElementById('allergies').value,
-          diseases: document.getElementById('diseases').value,
-          address: document.getElementById('address').value,
-          city: document.getElementById('city').value,
-          state: document.getElementById('state').value,
-          pincode: document.getElementById('pincode').value,
-          emergencyContact: document.getElementById('emergencyContact').value,
-          profileCompleted: true
+          name: document.getElementById('name').value || '',
+          phone: document.getElementById('phone').value || '',
+          dob: document.getElementById('dob').value || '',
+          gender: document.getElementById('gender').value || '',
+          bloodGroup: document.getElementById('bloodGroup').value || '',
+          allergies: document.getElementById('allergies').value || '',
+          diseases: document.getElementById('diseases').value || '',
+          address: document.getElementById('address').value || '',
+          city: document.getElementById('city').value || '',
+          state: document.getElementById('state').value || '',
+          pincode: document.getElementById('pincode').value || '',
+          emergencyContact: document.getElementById('emergencyContact').value || '',
+          profileCompleted: true,
+          updatedAt: new Date()
         };
 
         if (photoURL) {
@@ -564,13 +597,14 @@
         successMessage.textContent = 'Profile completed successfully! Redirecting...';
         successMessage.classList.add('show');
 
+        // Ensure redirect happens
         setTimeout(() => {
           window.location.href = 'dashboard.html';
         }, 1500);
 
       } catch (error) {
         console.error('Save error:', error);
-        errorMessage.textContent = 'Error saving profile: ' + error.message;
+        errorMessage.textContent = 'Error saving profile: ' + (error.message || 'Unknown error');
         errorMessage.classList.add('show');
         saveBtn.disabled = false;
         saveBtn.innerHTML = '<i class="fas fa-check"></i> Complete Profile';
@@ -579,16 +613,27 @@
 
     async function skipProfileCompletion() {
       const userId = getCurrentUserId();
-      if (!userId) return;
+      if (!userId) {
+        alert('Please log in first');
+        return;
+      }
+
+      const db = firebaseServices.db;
+      if (!db) {
+        alert('Firebase not initialized');
+        return;
+      }
 
       try {
         // Mark profile as completed anyway
         await db.collection('users').doc(userId).update({
-          profileCompleted: true
+          profileCompleted: true,
+          updatedAt: new Date()
         });
         window.location.href = 'dashboard.html';
       } catch (error) {
         console.error('Skip error:', error);
+        alert('Error: ' + error.message);
       }
     }
 
