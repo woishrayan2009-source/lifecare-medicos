@@ -14,38 +14,53 @@
 // Check: https://console.firebase.google.com/
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDemoKeyReplaceMeWithRealKey123456789",
+  apiKey: "AIzaSyAREQXdf4qZ5n2s91wA0Jl6toYxrLnh2T0",
   authDomain: "lifecure-medicos.firebaseapp.com",
   projectId: "lifecure-medicos",
-  storageBucket: "lifecure-medicos.appspot.com",
-  messagingSenderId: "123456789012",
-  appId: "1:123456789012:web:abcdef1234567890",
-  measurementId: "G-ABCDEFGHIJ"
+  storageBucket: "lifecure-medicos.firebasestorage.app",
+  messagingSenderId: "842355887008",
+  appId: "1:842355887008:web:18a5603e1d0310b4b432c5",
+  measurementId: "G-11GWDX8VHL"
 };
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+const placeholderApiKeys = [
+  'AIzaSyDemoKeyReplaceMeWithRealKey123456789',
+  'YOUR_API_KEY'
+];
 
-// Get Firebase services
-const auth = firebase.auth();
-const db = firebase.firestore();
-const storage = firebase.storage();
+const isPlaceholderApiKey = placeholderApiKeys.some((key) => firebaseConfig.apiKey.includes(key));
 
-// Google Sign-In provider
-const googleProvider = new firebase.auth.GoogleAuthProvider();
-googleProvider.addScope('profile');
-googleProvider.addScope('email');
+if (isPlaceholderApiKey) {
+  console.error('Firebase is not configured. Replace the placeholder API key in assets/js/firebase-config.js with your real Firebase Web API key.');
+  window.firebaseServices = {
+    auth: null,
+    db: null,
+    storage: null,
+    googleProvider: null,
+    firebase: window.firebase || null
+  };
+} else {
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
 
-// Firestore settings
-db.settings({ timestampsInSnapshots: true });
+  // Get Firebase services locally to avoid leaking global bindings
+  const firebaseAuth = firebase.auth();
+  const firebaseDb = firebase.firestore();
+  const firebaseStorage = firebase.storage();
 
-// Export for use in other files
-window.firebaseServices = {
-  auth,
-  db,
-  storage,
-  googleProvider,
-  firebase
-};
+  // Google Sign-In provider
+  const firebaseGoogleProvider = new firebase.auth.GoogleAuthProvider();
+  firebaseGoogleProvider.addScope('profile');
+  firebaseGoogleProvider.addScope('email');
 
-console.log('✓ Firebase initialized successfully');
+  // Export for use in other files
+  window.firebaseServices = {
+    auth: firebaseAuth,
+    db: firebaseDb,
+    storage: firebaseStorage,
+    googleProvider: firebaseGoogleProvider,
+    firebase
+  };
+
+  console.log('✓ Firebase initialized successfully');
+}
