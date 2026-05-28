@@ -28,51 +28,13 @@ if (!auth || !db || !googleProvider) {
   let currentUserData = null;
   let userRole = null;
 
-  auth.onAuthStateChanged(async (user) => {
-    currentUser = user;
-
-    if (user) {
-      // User is logged in
-      console.log('✓ User logged in:', user.email);
-
-      try {
-        // Get user profile from Firestore
-        const userDoc = await db.collection('users').doc(user.uid).get();
-        
-        if (userDoc.exists) {
-          currentUserData = userDoc.data();
-          userRole = currentUserData.role || 'user';
-          
-          // Log the role
-          console.log('✓ User role:', userRole);
-          
-          // Call route protection
-          handleAuthRoute();
-        } else {
-          // First time user - redirect to signup if not on signup page
-          if (!window.location.pathname.includes('signup.html') && 
-              !window.location.pathname.includes('complete-profile.html')) {
-            window.location.href = 'complete-profile.html';
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    } else {
-      // User is logged out
-      console.log('✓ User logged out');
-      currentUserData = null;
-      userRole = null;
-      handleAuthRoute();
-    }
-  });
-
   /* ===================================================
      ROUTE PROTECTION
   =================================================== */
 
   function handleAuthRoute() {
-    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    const raw = window.location.pathname.split('/').pop() || 'index.html';
+    const currentPage = raw.includes('.') ? raw : raw + '.html';
     
     // Public pages - no auth required
     const publicPages = ['index.html', 'login.html', 'signup.html', 'admin.html'];

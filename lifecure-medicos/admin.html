@@ -25,10 +25,10 @@
   <link rel="stylesheet" href="assets/css/admin.css" />
 
   <!-- Firebase compat bundles -->
-  <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-app-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-auth-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-storage-compat.js" defer></script>
 </head>
 <body>
 
@@ -63,7 +63,7 @@
           </button>
         </div>
       </div>
-      <button class="btn-login" onclick="handleLogin()">
+      <button class="btn-login" onclick="adminHandleLogin()">
         <i class="fas fa-right-to-bracket"></i> Login
       </button>
 
@@ -109,7 +109,7 @@
       </nav>
 
       <div class="sidebar-footer">
-        <button class="btn-logout-sidebar" onclick="handleLogout()">
+        <button class="btn-logout-sidebar" onclick="adminHandleLogout()">
           <i class="fas fa-right-from-bracket"></i><span>Logout</span>
         </button>
       </div>
@@ -131,7 +131,7 @@
         </div>
         <div class="header-right">
           <span class="logged-in-badge"><i class="fas fa-circle"></i> lifecure_admin</span>
-          <button class="btn-logout-top" onclick="handleLogout()">
+          <button class="btn-logout-top" onclick="adminHandleLogout()">
             <i class="fas fa-right-from-bracket"></i> Logout
           </button>
         </div>
@@ -601,10 +601,10 @@
   <div id="printReport" class="print-only"></div>
 
   <!-- Firebase Config & Auth -->
-  <script src="assets/js/firebase-config.js"></script>
-  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/firebase-config.js" defer></script>
+  <script src="assets/js/auth.js" defer></script>
 
   <!-- Admin JS -->
-  <script src="assets/js/admin.js"></script>
+  <script src="assets/js/admin.js" defer></script>
 </body>
 </html>

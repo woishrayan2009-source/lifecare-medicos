@@ -15,7 +15,7 @@
 /* ===================================================
    FIREBASE SERVICES
 =================================================== */
-const { auth, db, storage } = window.firebaseServices || {};
+let auth, db, storage;
 
 /* ===================================================
    STORAGE KEYS
@@ -162,7 +162,7 @@ function seedSampleData() {
 /* ===================================================
    LOGIN / LOGOUT (FIREBASE AUTH)
 =================================================== */
-async function handleLogin() {
+async function adminHandleLogin() {
   const email = document.getElementById('adminUser').value.trim();
   const password = document.getElementById('adminPass').value.trim();
   const errEl = document.getElementById('loginError');
@@ -182,7 +182,7 @@ async function handleLogin() {
   }
 }
 
-async function handleLogout() {
+async function adminHandleLogout() {
   try {
     await auth.signOut();
     document.getElementById('adminDashboard').classList.add('hidden');
@@ -219,8 +219,9 @@ function togglePassword() {
 
 // Allow Enter key on login form
 document.addEventListener('DOMContentLoaded', () => {
+  ({ auth, db, storage } = window.firebaseServices || {});
   document.getElementById('adminPass').addEventListener('keydown', e => {
-    if (e.key === 'Enter') handleLogin();
+    if (e.key === 'Enter') adminHandleLogin();
   });
   document.getElementById('adminUser').addEventListener('keydown', e => {
     if (e.key === 'Enter') document.getElementById('adminPass').focus();
@@ -239,22 +240,24 @@ document.addEventListener('DOMContentLoaded', () => {
   if (auth) {
     auth.onAuthStateChanged(async (user) => {
       if (user) {
-        // User is logged in - check if they're an admin
         try {
           const userDoc = await db.collection('users').doc(user.uid).get();
           const userData = userDoc.data();
-          
-          // For now, allow any authenticated user to access admin panel
-          // In production, check for admin role: if (userData?.role === 'admin')
+          if (!userData || userData.role !== 'admin') {
+            await auth.signOut();
+            showLoginError('Access denied. Admins only.');
+            return;
+          }
           document.getElementById('loginScreen').classList.add('hidden');
           document.getElementById('adminDashboard').classList.remove('hidden');
-          document.querySelector('.logged-in-badge').textContent = `✓ ${user.email}`;
+          document.querySelector('.logged-in-badge').innerHTML =
+            '<i class="fas fa-circle"></i> ' + user.email;
           initDashboard();
         } catch (error) {
           console.error('Error checking admin status:', error);
+          showLoginError('Error verifying admin access.');
         }
       } else {
-        // User is logged out
         document.getElementById('adminDashboard').classList.add('hidden');
         document.getElementById('loginScreen').classList.remove('hidden');
       }
