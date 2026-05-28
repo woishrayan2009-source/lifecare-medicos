@@ -6,12 +6,18 @@
 'use strict';
 
 /* ===================================================
-   FIREBASE SERVICES — declared at top, assigned in DOMContentLoaded
+   FIREBASE SERVICES & DB MANAGER
 =================================================== */
 let auth, db, storage;
+let medicines = [];
+let doctors = [];
+let doctorTimings = [];
+let appointments = [];
+let bookings = [];
+let timingEdits = []; // Temporary storage for timing edits
 
 /* ===================================================
-   STORAGE KEYS
+   STORAGE KEYS (kept for backward compatibility)
 =================================================== */
 const KEY_MEDICINES    = 'lifecure_medicines';
 const KEY_DOCTORS      = 'lifecure_doctors';
@@ -69,106 +75,227 @@ function escHtml(str) {
 }
 
 /* ===================================================
-   LOCAL STORAGE HELPERS
+   DATABASE HELPER FUNCTIONS (using Firestore)
 =================================================== */
+async function loadMedicines() {
+  if (dbManager && dbManager.db) {
+    medicines = await dbManager.getMedicines();
+  }
+  return medicines;
+}
+
+async function saveMedicineToDb(medData, medId = null) {
+  if (medId) {
+    const result = await dbManager.updateMedicine(medId, medData);
+    if (result.success) {
+      medicines = medicines.map(m => m.id === medId ? { ...m, ...medData } : m);
+    }
+    return result;
+  } else {
+    const result = await dbManager.addMedicine(medData);
+    if (result.success) {
+      medicines = await loadMedicines();
+    }
+    return result;
+  }
+}
+
+async function deleteMedicineFromDb(medId) {
+  const result = await dbManager.deleteMedicine(medId);
+  if (result.success) {
+    medicines = medicines.filter(m => m.id !== medId);
+  }
+  return result;
+}
+
+async function loadDoctors() {
+  if (dbManager && dbManager.db) {
+    doctors = await dbManager.getDoctors();
+  }
+  return doctors;
+}
+
+async function saveDoctorToDb(docData, docId = null) {
+  if (docId) {
+    const result = await dbManager.updateDoctor(docId, docData);
+    if (result.success) {
+      doctors = doctors.map(d => d.id === docId ? { ...d, ...docData } : d);
+    }
+    return result;
+  } else {
+    const result = await dbManager.addDoctor(docData);
+    if (result.success) {
+      doctors = await loadDoctors();
+    }
+    return result;
+  }
+}
+
+async function deleteDoctorFromDb(docId) {
+  const result = await dbManager.deleteDoctor(docId);
+  if (result.success) {
+    doctors = doctors.filter(d => d.id !== docId);
+    // Also delete associated timings
+    doctorTimings = doctorTimings.filter(t => t.doctorId !== docId);
+  }
+  return result;
+}
+
+async function loadAppointments() {
+  if (dbManager && dbManager.db) {
+    appointments = await dbManager.getAppointments();
+  }
+  return appointments;
+}
+
+async function saveAppointmentToDb(apptData, apptId = null) {
+  if (apptId) {
+    const result = await dbManager.updateAppointment(apptId, apptData);
+    if (result.success) {
+      appointments = appointments.map(a => a.id === apptId ? { ...a, ...apptData } : a);
+    }
+    return result;
+  } else {
+    const result = await dbManager.addAppointment(apptData);
+    if (result.success) {
+      appointments = await loadAppointments();
+    }
+    return result;
+  }
+}
+
+async function deleteAppointmentFromDb(apptId) {
+  const result = await dbManager.deleteAppointment(apptId);
+  if (result.success) {
+    appointments = appointments.filter(a => a.id !== apptId);
+  }
+  return result;
+}
+
+async function loadTimings() {
+  if (dbManager && dbManager.db) {
+    doctorTimings = await dbManager.getTimings();
+  }
+  return doctorTimings;
+}
+
+async function saveTimingToDb(timingData, timingId = null) {
+  if (timingId) {
+    const result = await dbManager.updateTiming(timingId, timingData);
+    if (result.success) {
+      doctorTimings = doctorTimings.map(t => t.id === timingId ? { ...t, ...timingData } : t);
+    }
+    return result;
+  } else {
+    const result = await dbManager.addTiming(timingData);
+    if (result.success) {
+      doctorTimings = await loadTimings();
+    }
+    return result;
+  }
+}
+
+async function deleteTimingFromDb(timingId) {
+  const result = await dbManager.deleteTiming(timingId);
+  if (result.success) {
+    doctorTimings = doctorTimings.filter(t => t.id !== timingId);
+  }
+  return result;
+}
+
+async function loadBookings() {
+  if (dbManager && dbManager.db) {
+    bookings = await dbManager.getBookings();
+  }
+  return bookings;
+}
+
+async function saveBookingToDb(bookingData, bookingId = null) {
+  if (bookingId) {
+    const result = await dbManager.updateBooking(bookingId, bookingData);
+    if (result.success) {
+      bookings = bookings.map(b => b.id === bookingId ? { ...b, ...bookingData } : b);
+    }
+    return result;
+  } else {
+    const result = await dbManager.createBooking(bookingData);
+    if (result.success) {
+      bookings = await loadBookings();
+    }
+    return result;
+  }
+}
+
+// Legacy localStorage functions for backward compatibility
 function getMedicines() {
-  return JSON.parse(localStorage.getItem(KEY_MEDICINES) || '[]');
+  return medicines;
 }
-function saveMedicines(arr) {
-  localStorage.setItem(KEY_MEDICINES, JSON.stringify(arr));
-}
+
 function getAppointments() {
-  return JSON.parse(localStorage.getItem(KEY_APPOINTMENTS) || '[]');
+  return appointments;
 }
-function saveAppointments(arr) {
-  localStorage.setItem(KEY_APPOINTMENTS, JSON.stringify(arr));
-}
+
 function getDoctors() {
-  return JSON.parse(localStorage.getItem(KEY_DOCTORS) || '[]');
+  return doctors;
 }
-function saveDoctors(arr) {
-  localStorage.setItem(KEY_DOCTORS, JSON.stringify(arr));
-}
+
 function getDoctorTimings() {
-  return JSON.parse(localStorage.getItem(KEY_DOCTOR_TIMINGS) || '[]');
+  return doctorTimings;
 }
-function saveDoctorTimings(arr) {
-  localStorage.setItem(KEY_DOCTOR_TIMINGS, JSON.stringify(arr));
-}
+
 function getBookings() {
-  return JSON.parse(localStorage.getItem(KEY_BOOKINGS) || '[]');
+  return bookings;
 }
-function saveBookings(arr) {
-  localStorage.setItem(KEY_BOOKINGS, JSON.stringify(arr));
-}
+
 function getNextBillNum() {
-  const n = parseInt(localStorage.getItem(KEY_BILL_NUM) || '999') + 1;
-  localStorage.setItem(KEY_BILL_NUM, n);
-  return n;
+  // Generate bill number from timestamp for uniqueness
+  const timestamp = Date.now().toString().slice(-6);
+  const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+  return parseInt(timestamp + random);
 }
 
 /* ===================================================
-   SEED DATA
+   SEED DATA TO DATABASE
 =================================================== */
+async function seedSampleDataToDb() {
+  // Check if medicines exist, if so skip seeding
+  if (medicines.length > 0) return;
+
+  try {
+    const sampleMedicines = [
+      { name: 'Paracetamol 500mg',   category: 'Tablet',  qty: 50, unit: 'Strips',  expiry: addMonths(6),  available: true, notes: '' },
+      { name: 'Amoxicillin 250mg',   category: 'Capsule', qty: 30, unit: 'Strips',  expiry: addMonths(4),  available: true, notes: '' },
+      { name: 'Omeprazole 20mg',     category: 'Capsule', qty: 25, unit: 'Strips',  expiry: addMonths(8),  available: true, notes: '' },
+      { name: 'Cetirizine 10mg',     category: 'Tablet',  qty: 40, unit: 'Strips',  expiry: addMonths(3),  available: true, notes: '' },
+      { name: 'Metformin 500mg',     category: 'Tablet',  qty: 15, unit: 'Strips',  expiry: addMonths(10), available: true, notes: '' },
+    ];
+    
+    for (const med of sampleMedicines) {
+      await dbManager.addMedicine({...med, id: genId()});
+    }
+    
+    const sampleDoctors = [
+      { name: 'Dr. Saddam Hussain', specialty: 'General', experience: 15, available: true, qualifications: 'MBBS, MD', notes: '' },
+      { name: 'Dr. Sandip Roy', specialty: 'Dermatology', experience: 12, available: true, qualifications: 'MBBS, MD Dermatology', notes: '' },
+      { name: 'Dr. Shirsendu Roy', specialty: 'Cardiology', experience: 18, available: true, qualifications: 'MBBS, MD Cardiology', notes: '' },
+    ];
+    
+    for (const doc of sampleDoctors) {
+      await dbManager.addDoctor({...doc, id: genId()});
+    }
+    
+    // Reload data
+    await loadMedicines();
+    await loadDoctors();
+    console.log('✓ Sample data seeded to Firestore');
+  } catch (error) {
+    console.warn('Could not seed sample data:', error);
+  }
+}
+
 function seedSampleData() {
-  if (!localStorage.getItem(KEY_MEDICINES)) {
-    saveMedicines([
-      { id: genId(), name: 'Paracetamol 500mg',   category: 'Tablet',  qty: 50, unit: 'Strips',  expiry: addMonths(6),  available: true, notes: '' },
-      { id: genId(), name: 'Amoxicillin 250mg',   category: 'Capsule', qty: 30, unit: 'Strips',  expiry: addMonths(4),  available: true, notes: '' },
-      { id: genId(), name: 'Omeprazole 20mg',     category: 'Capsule', qty: 25, unit: 'Strips',  expiry: addMonths(8),  available: true, notes: '' },
-      { id: genId(), name: 'Cetirizine 10mg',     category: 'Tablet',  qty: 40, unit: 'Strips',  expiry: addMonths(3),  available: true, notes: '' },
-      { id: genId(), name: 'Metformin 500mg',     category: 'Tablet',  qty: 15, unit: 'Strips',  expiry: addMonths(10), available: true, notes: '' },
-      { id: genId(), name: 'Azithromycin 250mg',  category: 'Tablet',  qty: 8,  unit: 'Strips',  expiry: addMonths(5),  available: true, notes: 'Low stock — reorder soon' },
-      { id: genId(), name: 'Betamethasone Cream', category: 'Cream',   qty: 20, unit: 'Pieces',  expiry: addMonths(2),  available: true, notes: '' },
-      { id: genId(), name: 'Vitamin D3 Drops',    category: 'Drop',    qty: 3,  unit: 'Bottles', expiry: addDays(45),   available: true, notes: 'Expiring soon — use first' },
-    ]);
-  }
-  if (!localStorage.getItem(KEY_APPOINTMENTS)) {
-    saveAppointments([
-      { id: genId(), patient: 'Rahim Ali',    phone: '9876543210', doctor: 'Dr. Saddam Hussain',  date: todayISO(),  time: '10:00', status: 'Scheduled', notes: 'Gas and acidity problem' },
-      { id: genId(), patient: 'Sunita Devi',  phone: '8765432109', doctor: 'Dr. Sandip Roy',      date: addDays(2),  time: '13:30', status: 'Scheduled', notes: 'Skin allergy follow-up' },
-      { id: genId(), patient: 'Rajesh Kumar', phone: '7654321098', doctor: 'Dr. Shirsendu Roy',   date: addDays(-1), time: '14:00', status: 'Completed', notes: 'Fever and cough' },
-    ]);
-  }
-  if (!localStorage.getItem(KEY_DOCTORS)) {
-    saveDoctors([
-      { id: genId(), name: 'Dr. Saddam Hussain', specialty: 'General', experience: 15, available: true, qualifications: 'MBBS, MD', notes: '' },
-      { id: genId(), name: 'Dr. Sandip Roy', specialty: 'Dermatology', experience: 12, available: true, qualifications: 'MBBS, MD Dermatology', notes: '' },
-      { id: genId(), name: 'Dr. Shirsendu Roy', specialty: 'Cardiology', experience: 18, available: true, qualifications: 'MBBS, MD Cardiology', notes: '' },
-      { id: genId(), name: 'Dr. Intekhab Alam', specialty: 'Pediatrics', experience: 10, available: true, qualifications: 'MBBS, MD Pediatrics', notes: '' },
-    ]);
-  }
-  if (!localStorage.getItem(KEY_DOCTOR_TIMINGS)) {
-    // Sample timings - Monday to Saturday, 9 AM to 6 PM with lunch break
-    const doctors = getDoctors();
-    const timings = [];
-    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    doctors.forEach(doc => {
-      days.forEach(day => {
-        timings.push({ 
-          id: genId(), 
-          doctorId: doc.id, 
-          doctorName: doc.name,
-          day: day, 
-          startTime: '09:00', 
-          endTime: '13:00',
-          slotDuration: 30, // minutes
-          break: true 
-        });
-        timings.push({ 
-          id: genId(), 
-          doctorId: doc.id, 
-          doctorName: doc.name,
-          day: day, 
-          startTime: '14:00', 
-          endTime: '18:00',
-          slotDuration: 30,
-          break: false 
-        });
-      });
-    });
-    saveDoctorTimings(timings);
-  }
+  // Legacy function - now just calls the async version if needed
+  // This is kept for backward compatibility
 }
 
 /* ===================================================
@@ -226,13 +353,21 @@ function togglePassword() {
 /* ===================================================
    DOM READY — Entry Point
 =================================================== */
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
 
   // ✅ CRITICAL: Assign Firebase AFTER DOM+scripts are ready
   const services = window.firebaseServices || {};
   auth    = services.auth    || null;
   db      = services.db      || null;
   storage = services.storage || null;
+
+  // Initialize database manager
+  if (dbManager && db && auth) {
+    dbManager.init(auth, db);
+    console.log('✓ dbManager initialized');
+  } else {
+    console.warn('dbManager or Firebase services not fully loaded, using fallback mode');
+  }
 
   // Debug: log Firebase status
   console.log('Firebase auth:', auth ? '✓ loaded' : '✗ NULL — check firebase-config.js');
@@ -280,11 +415,19 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
           }
 
-          // ✅ Admin confirmed — show dashboard
+          // ✅ Admin confirmed — load data and show dashboard
           document.getElementById('loginScreen').classList.add('hidden');
           document.getElementById('adminDashboard').classList.remove('hidden');
           document.querySelector('.logged-in-badge').innerHTML =
             '<i class="fas fa-circle"></i> ' + escHtml(user.email);
+          
+          // Load all data from Firestore
+          await loadMedicines();
+          await loadDoctors();
+          await loadAppointments();
+          await loadTimings();
+          await loadBookings();
+          
           initDashboard();
 
         } catch (error) {
@@ -297,7 +440,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('adminDashboard').classList.add('hidden');
         document.getElementById('loginScreen').classList.remove('hidden');
         // Clear fields
-        document.getElementById('adminUser').value = '';
+        document.getElementById('adminEmail').value = '';
         document.getElementById('adminPass').value = '';
         document.getElementById('loginError').classList.add('hidden');
       }
@@ -308,7 +451,8 @@ document.addEventListener('DOMContentLoaded', () => {
     showLoginError('Firebase failed to load. Please refresh or check console.');
   }
 
-  seedSampleData();
+  // Seed sample data to database (if empty)
+  seedSampleDataToDb();
 });
 
 /* ===================================================
@@ -495,27 +639,55 @@ function saveMedicine() {
   if (qty === '' || parseInt(qty) < 0) return showModalError(errEl, 'Enter a valid stock quantity.');
   if (!unit)     return showModalError(errEl, 'Please select a unit.');
   if (!expiry)   return showModalError(errEl, 'Expiry date is required.');
+  
   let meds = getMedicines();
   const dup = meds.find(m => m.name.toLowerCase() === name.toLowerCase() && m.id !== editId);
   if (dup) return showModalError(errEl, 'A medicine with this name already exists.');
+  
+  // Save to database
+  const medData = { name, category, qty: parseInt(qty), unit, expiry, available, notes };
+  
   if (editId) {
-    meds = meds.map(m => m.id === editId ? { ...m, name, category, qty: parseInt(qty), unit, expiry, available, notes } : m);
+    saveMedicineToDb(medData, editId).then(result => {
+      if (result.success) {
+        closeMedicineModal();
+        renderMedicinesTable();
+        renderDashboard();
+        showSuccessMessage('Medicine updated successfully!');
+      } else {
+        showModalError(errEl, 'Error updating medicine: ' + result.error);
+      }
+    }).catch(err => {
+      showModalError(errEl, 'Error saving: ' + err.message);
+    });
   } else {
-    meds.push({ id: genId(), name, category, qty: parseInt(qty), unit, expiry, available, notes });
+    saveMedicineToDb({...medData, id: genId()}).then(result => {
+      if (result.success) {
+        closeMedicineModal();
+        renderMedicinesTable();
+        renderDashboard();
+        showSuccessMessage('Medicine added successfully!');
+      } else {
+        showModalError(errEl, 'Error adding medicine: ' + result.error);
+      }
+    }).catch(err => {
+      showModalError(errEl, 'Error saving: ' + err.message);
+    });
   }
-  saveMedicines(meds);
-  closeMedicineModal();
-  renderMedicinesTable();
-  renderDashboard();
 }
 
 function confirmDeleteMedicine(id) {
   const m = getMedicines().find(x => x.id === id);
   if (!m) return;
-  openConfirm(`Delete "<strong>${escHtml(m.name)}</strong>"? This cannot be undone.`, () => {
-    saveMedicines(getMedicines().filter(x => x.id !== id));
-    renderMedicinesTable();
-    renderDashboard();
+  openConfirm(`Delete "<strong>${escHtml(m.name)}</strong>"? This cannot be undone.`, async () => {
+    const result = await deleteMedicineFromDb(id);
+    if (result.success) {
+      renderMedicinesTable();
+      renderDashboard();
+      showSuccessMessage('Medicine deleted successfully!');
+    } else {
+      alert('Error deleting medicine: ' + result.error);
+    }
   });
 }
 
@@ -612,34 +784,201 @@ function saveDoctor() {
   const dup = doctors.find(d => d.name.toLowerCase() === name.toLowerCase() && d.id !== editId);
   if (dup) return showModalError(errEl, 'A doctor with this name already exists.');
 
-  if (editId) {
-    doctors = doctors.map(d => d.id === editId ? { ...d, name, specialty, experience, available, qualifications, notes } : d);
-  } else {
-    doctors.push({ id: genId(), name, specialty, experience, available, qualifications, notes });
-  }
+  const docData = { name, specialty, experience, available, qualifications, notes };
 
-  saveDoctors(doctors);
-  closeDoctorModal();
-  renderDoctorsTable();
-  renderDashboard();
+  if (editId) {
+    saveDoctorToDb(docData, editId).then(result => {
+      if (result.success) {
+        closeDoctorModal();
+        renderDoctorsTable();
+        renderDashboard();
+        showSuccessMessage('Doctor updated successfully!');
+      } else {
+        showModalError(errEl, 'Error updating doctor: ' + result.error);
+      }
+    }).catch(err => {
+      showModalError(errEl, 'Error saving: ' + err.message);
+    });
+  } else {
+    saveDoctorToDb({...docData, id: genId()}).then(result => {
+      if (result.success) {
+        closeDoctorModal();
+        renderDoctorsTable();
+        renderDashboard();
+        showSuccessMessage('Doctor added successfully!');
+      } else {
+        showModalError(errEl, 'Error adding doctor: ' + result.error);
+      }
+    }).catch(err => {
+      showModalError(errEl, 'Error saving: ' + err.message);
+    });
+  }
 }
 
 function confirmDeleteDoctor(id) {
   const d = getDoctors().find(x => x.id === id);
   if (!d) return;
-  openConfirm(`Delete "<strong>${escHtml(d.name)}</strong>"? This cannot be undone.`, () => {
-    saveDoctors(getDoctors().filter(x => x.id !== id));
-    // Also delete associated timings
-    saveDoctorTimings(getDoctorTimings().filter(t => t.doctorId !== id));
-    renderDoctorsTable();
-    renderDashboard();
+  openConfirm(`Delete "<strong>${escHtml(d.name)}</strong>"? This cannot be undone.`, async () => {
+    const result = await deleteDoctorFromDb(id);
+    if (result.success) {
+      renderDoctorsTable();
+      renderDashboard();
+      showSuccessMessage('Doctor deleted successfully!');
+    } else {
+      alert('Error deleting doctor: ' + result.error);
+    }
   });
 }
 
 function manageDoctorTimings(doctorId) {
   const doc = getDoctors().find(d => d.id === doctorId);
   if (!doc) return;
-  alert(`Manage timings for ${doc.name}.\n\nFeature coming soon: Configure working days and hours.`);
+  
+  document.getElementById('timingsDoctorId').value = doctorId;
+  document.getElementById('timingsModalTitle').textContent = `Doctor Timings - ${escHtml(doc.name)}`;
+  
+  // Load timings for this doctor
+  timingEdits = getDoctorTimings().filter(t => t.doctorId === doctorId).map(t => ({...t}));
+  
+  if (timingEdits.length === 0) {
+    // Create default timings if none exist
+    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    days.forEach(day => {
+      timingEdits.push({
+        id: genId(),
+        doctorId: doctorId,
+        doctorName: doc.name,
+        day: day,
+        startTime: '09:00',
+        endTime: '13:00',
+        slotDuration: 30,
+        break: true
+      });
+      timingEdits.push({
+        id: genId(),
+        doctorId: doctorId,
+        doctorName: doc.name,
+        day: day,
+        startTime: '14:00',
+        endTime: '18:00',
+        slotDuration: 30,
+        break: false
+      });
+    });
+  }
+  
+  renderTimingsTable();
+  document.getElementById('timingsModal').classList.remove('hidden');
+}
+
+function renderTimingsTable() {
+  const tbody = document.getElementById('timingsTableBody');
+  tbody.innerHTML = timingEdits.map((t, idx) => `
+    <tr>
+      <td>
+        <select onchange="timingEdits[${idx}].day = this.value" style="width: 100%; padding: 5px;">
+          <option value="Monday" ${t.day === 'Monday' ? 'selected' : ''}>Monday</option>
+          <option value="Tuesday" ${t.day === 'Tuesday' ? 'selected' : ''}>Tuesday</option>
+          <option value="Wednesday" ${t.day === 'Wednesday' ? 'selected' : ''}>Wednesday</option>
+          <option value="Thursday" ${t.day === 'Thursday' ? 'selected' : ''}>Thursday</option>
+          <option value="Friday" ${t.day === 'Friday' ? 'selected' : ''}>Friday</option>
+          <option value="Saturday" ${t.day === 'Saturday' ? 'selected' : ''}>Saturday</option>
+          <option value="Sunday" ${t.day === 'Sunday' ? 'selected' : ''}>Sunday</option>
+        </select>
+      </td>
+      <td>
+        <input type="time" value="${t.startTime}" onchange="timingEdits[${idx}].startTime = this.value" style="width: 100%; padding: 5px;" />
+      </td>
+      <td>
+        <input type="time" value="${t.endTime}" onchange="timingEdits[${idx}].endTime = this.value" style="width: 100%; padding: 5px;" />
+      </td>
+      <td>
+        <input type="number" value="${t.slotDuration}" min="15" max="120" step="15" onchange="timingEdits[${idx}].slotDuration = parseInt(this.value)" style="width: 100%; padding: 5px; text-align: center;" />
+      </td>
+      <td>
+        <button class="btn-icon del" title="Delete" onclick="deleteTimingSlot(${idx})">
+          <i class="fas fa-trash-can"></i>
+        </button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function addTimingSlot() {
+  const doctorId = document.getElementById('timingsDoctorId').value;
+  const docName = getDoctors().find(d => d.id === doctorId)?.name || 'Unknown';
+  timingEdits.push({
+    id: genId(),
+    doctorId: doctorId,
+    doctorName: docName,
+    day: 'Monday',
+    startTime: '09:00',
+    endTime: '13:00',
+    slotDuration: 30,
+    break: false
+  });
+  renderTimingsTable();
+}
+
+function deleteTimingSlot(idx) {
+  timingEdits.splice(idx, 1);
+  renderTimingsTable();
+}
+
+async function saveAllTimings() {
+  const errEl = document.getElementById('timingsModalError');
+  
+  try {
+    // Validate timings
+    for (const timing of timingEdits) {
+      if (!timing.day || !timing.startTime || !timing.endTime) {
+        showModalError(errEl, 'All fields are required');
+        return;
+      }
+      if (timing.startTime >= timing.endTime) {
+        showModalError(errEl, 'Start time must be before end time');
+        return;
+      }
+    }
+    
+    errEl.classList.add('hidden');
+    
+    // Save to database
+    const doctorId = document.getElementById('timingsDoctorId').value;
+    const existingTimings = getDoctorTimings().filter(t => t.doctorId === doctorId);
+    
+    // Delete old timings
+    for (const timing of existingTimings) {
+      await deleteTimingFromDb(timing.id);
+    }
+    
+    // Add new timings
+    for (const timing of timingEdits) {
+      await saveTimingToDb(timing, timing.id);
+    }
+    
+    // Reload data and close modal
+    await loadTimings();
+    closeTimingsModal();
+    renderDoctorsTable();
+    showSuccessMessage('Doctor timings saved successfully!');
+  } catch (error) {
+    console.error('Error saving timings:', error);
+    showModalError(errEl, 'Error saving timings: ' + error.message);
+  }
+}
+
+function closeTimingsModal() {
+  document.getElementById('timingsModal').classList.add('hidden');
+  timingEdits = [];
+}
+
+function showSuccessMessage(msg) {
+  const div = document.createElement('div');
+  div.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #4caf50; color: white; padding: 15px 20px; border-radius: 4px; z-index: 10000; animation: slideIn 0.3s ease-out;';
+  div.textContent = msg;
+  document.body.appendChild(div);
+  setTimeout(() => div.remove(), 3000);
 }
 
 document.addEventListener('change', e => {
@@ -746,31 +1085,60 @@ function saveAppt() {
   if (!doctor)  return showModalError(errEl, 'Please select a doctor.');
   if (!date)    return showModalError(errEl, 'Date is required.');
   if (!time)    return showModalError(errEl, 'Time is required.');
-  let appts = getAppointments();
+  
+  const apptData = { patient, phone, doctor, status, date, time, notes };
+  
   if (editId) {
-    appts = appts.map(a => a.id === editId ? { ...a, patient, phone, doctor, status, date, time, notes } : a);
+    saveAppointmentToDb(apptData, editId).then(result => {
+      if (result.success) {
+        closeApptModal();
+        renderApptsTable();
+        renderDashboard();
+        showSuccessMessage('Appointment updated!');
+      } else {
+        showModalError(errEl, 'Error updating appointment: ' + result.error);
+      }
+    }).catch(err => {
+      showModalError(errEl, 'Error saving: ' + err.message);
+    });
   } else {
-    appts.push({ id: genId(), patient, phone, doctor, status, date, time, notes });
+    saveAppointmentToDb({...apptData, id: genId()}).then(result => {
+      if (result.success) {
+        closeApptModal();
+        renderApptsTable();
+        renderDashboard();
+        showSuccessMessage('Appointment created!');
+      } else {
+        showModalError(errEl, 'Error creating appointment: ' + result.error);
+      }
+    }).catch(err => {
+      showModalError(errEl, 'Error saving: ' + err.message);
+    });
   }
-  saveAppointments(appts);
-  closeApptModal();
-  renderApptsTable();
-  renderDashboard();
 }
 
 function markApptCompleted(id) {
-  saveAppointments(getAppointments().map(a => a.id === id ? { ...a, status: 'Completed' } : a));
-  renderApptsTable();
-  renderDashboard();
+  saveAppointmentToDb({ status: 'Completed' }, id).then(result => {
+    if (result.success) {
+      renderApptsTable();
+      renderDashboard();
+      showSuccessMessage('Appointment marked as completed!');
+    }
+  });
 }
 
 function confirmDeleteAppt(id) {
   const a = getAppointments().find(x => x.id === id);
   if (!a) return;
-  openConfirm(`Delete appointment for "<strong>${escHtml(a.patient)}</strong>"? This cannot be undone.`, () => {
-    saveAppointments(getAppointments().filter(x => x.id !== id));
-    renderApptsTable();
-    renderDashboard();
+  openConfirm(`Delete appointment for "<strong>${escHtml(a.patient)}</strong>"? This cannot be undone.`, async () => {
+    const result = await deleteAppointmentFromDb(id);
+    if (result.success) {
+      renderApptsTable();
+      renderDashboard();
+      showSuccessMessage('Appointment deleted!');
+    } else {
+      alert('Error deleting appointment: ' + result.error);
+    }
   });
 }
 
@@ -807,8 +1175,8 @@ function renderPendingBookings() {
 }
 
 function approveBooking(bookingId) {
-  const bookings = getBookings();
-  const booking = bookings.find(b => b.id === bookingId);
+  const bookings_list = getBookings();
+  const booking = bookings_list.find(b => b.id === bookingId);
   if (!booking) return;
   
   // Create an appointment from the booking
@@ -824,21 +1192,25 @@ function approveBooking(bookingId) {
   };
   
   // Add to appointments and mark booking as confirmed
-  saveAppointments([...getAppointments(), newAppt]);
-  booking.status = 'confirmed';
-  saveBookings(bookings);
-  
-  renderApptsTable();
-  renderPendingBookings();
-  renderDashboard();
+  saveAppointmentToDb({...newAppt}).then(() => {
+    saveBookingToDb({ status: 'confirmed' }, bookingId).then(() => {
+      loadAppointments();
+      renderApptsTable();
+      renderPendingBookings();
+      renderDashboard();
+      showSuccessMessage('Booking approved!');
+    });
+  });
 }
 
 function rejectBooking(bookingId) {
-  openConfirm('Reject this booking request?', () => {
-    const bookings = getBookings().map(b => b.id === bookingId ? { ...b, status: 'rejected' } : b);
-    saveBookings(bookings);
-    renderPendingBookings();
-    renderDashboard();
+  openConfirm('Reject this booking request?', async () => {
+    const result = await saveBookingToDb({ status: 'rejected' }, bookingId);
+    if (result.success) {
+      renderPendingBookings();
+      renderDashboard();
+      showSuccessMessage('Booking rejected!');
+    }
   });
 }
 

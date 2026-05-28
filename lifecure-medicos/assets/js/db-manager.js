@@ -349,6 +349,92 @@ let dbManager = {
   },
 
   /* ===================================================
+     APPOINTMENTS
+  =================================================== */
+  async getAppointments() {
+    try {
+      const snapshot = await this.db.collection(this.APPOINTMENTS)
+        .orderBy('createdAt', 'desc')
+        .get();
+      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    } catch (error) {
+      console.error('Error fetching appointments:', error);
+      return [];
+    }
+  },
+
+  async addAppointment(appointmentData) {
+    try {
+      const docRef = await this.db.collection(this.APPOINTMENTS).add({
+        ...appointmentData,
+        id: this.genId(),
+        createdAt: new Date()
+      });
+      return { success: true, id: docRef.id };
+    } catch (error) {
+      console.error('Error adding appointment:', error);
+      return { success: false, error: error.message };
+    }
+  },
+
+  async updateAppointment(apptId, updates) {
+    try {
+      const querySnapshot = await this.db.collection(this.APPOINTMENTS)
+        .where('id', '==', apptId).get();
+      
+      if (querySnapshot.empty) {
+        return { success: false, error: 'Appointment not found' };
+      }
+
+      await querySnapshot.docs[0].ref.update({
+        ...updates,
+        updatedAt: new Date()
+      });
+      return { success: true };
+    } catch (error) {
+      console.error('Error updating appointment:', error);
+      return { success: false, error: error.message };
+    }
+  },
+
+  async deleteAppointment(apptId) {
+    try {
+      const querySnapshot = await this.db.collection(this.APPOINTMENTS)
+        .where('id', '==', apptId).get();
+      
+      if (querySnapshot.empty) {
+        return { success: false, error: 'Appointment not found' };
+      }
+
+      await querySnapshot.docs[0].ref.delete();
+      return { success: true };
+    } catch (error) {
+      console.error('Error deleting appointment:', error);
+      return { success: false, error: error.message };
+    }
+  },
+
+  /* ===================================================
+     TIMINGS - DELETE METHOD
+  =================================================== */
+  async deleteTiming(timingId) {
+    try {
+      const querySnapshot = await this.db.collection(this.TIMINGS)
+        .where('id', '==', timingId).get();
+      
+      if (querySnapshot.empty) {
+        return { success: false, error: 'Timing not found' };
+      }
+
+      await querySnapshot.docs[0].ref.delete();
+      return { success: true };
+    } catch (error) {
+      console.error('Error deleting timing:', error);
+      return { success: false, error: error.message };
+    }
+  },
+
+  /* ===================================================
      NOTICES
   =================================================== */
   async getNotices() {
