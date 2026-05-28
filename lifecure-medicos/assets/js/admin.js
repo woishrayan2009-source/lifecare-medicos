@@ -174,8 +174,8 @@ function seedSampleData() {
 /* ===================================================
    LOGIN / LOGOUT
 =================================================== */
-async function adminHandleLogin() {
-  const email    = document.getElementById('adminUser').value.trim();
+async function adminHandleLoginForm() {
+  const email    = document.getElementById('adminEmail').value.trim();
   const password = document.getElementById('adminPass').value.trim();
 
   if (!email || !password) {
@@ -183,37 +183,23 @@ async function adminHandleLogin() {
     return;
   }
 
-  // Check Firebase loaded correctly
-  if (!auth) {
-    showLoginError('Firebase not loaded. Please refresh the page.');
-    console.error('auth is null — firebase-config.js may have failed to load.');
-    return;
+  // Use admin-auth module for Firebase authentication
+  const result = await adminLoginWithEmail(email, password);
+  
+  if (!result.success) {
+    showLoginError(result.error || 'Login failed. Please try again.');
   }
+  // On success, admin-auth.js will handle the UI update
+}
 
-  try {
-    await auth.signInWithEmailAndPassword(email, password);
-    // onAuthStateChanged will handle showing the dashboard
-  } catch (error) {
-    console.error('Login error:', error.code, error.message);
-    if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-      showLoginError('Invalid email or password.');
-    } else if (error.code === 'auth/invalid-email') {
-      showLoginError('Please enter a valid email address.');
-    } else if (error.code === 'auth/too-many-requests') {
-      showLoginError('Too many attempts. Please try again later.');
-    } else {
-      showLoginError('Login failed: ' + error.message);
-    }
-  }
+// Legacy function name support
+async function adminHandleLogin() {
+  return adminHandleLoginForm();
 }
 
 async function adminHandleLogout() {
-  try {
-    await auth.signOut();
-    // onAuthStateChanged handles the UI reset
-  } catch (error) {
-    console.error('Logout error:', error);
-  }
+  // Use admin-auth module
+  return adminLogout();
 }
 
 function showLoginError(message) {
@@ -254,11 +240,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Enter key support
   document.getElementById('adminPass').addEventListener('keydown', e => {
-    if (e.key === 'Enter') adminHandleLogin();
+    if (e.key === 'Enter') adminHandleLoginForm();
   });
-  document.getElementById('adminUser').addEventListener('keydown', e => {
-    if (e.key === 'Enter') document.getElementById('adminPass').focus();
-  });
+  const adminEmailEl = document.getElementById('adminEmail');
+  if (adminEmailEl) {
+    adminEmailEl.addEventListener('keydown', e => {
+      if (e.key === 'Enter') document.getElementById('adminPass').focus();
+    });
+  }
 
   // Close modals on overlay click
   document.querySelectorAll('.modal-overlay').forEach(overlay => {

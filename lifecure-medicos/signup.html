@@ -351,6 +351,27 @@
         />
       </div>
 
+      <div class="form-group">
+        <label style="margin-bottom: 12px;">Account Type *</label>
+        <div style="display: flex; gap: 16px;">
+          <div style="flex: 1;">
+            <input type="radio" id="roleUser" name="role" value="user" checked style="margin-right: 6px; cursor: pointer;" />
+            <label for="roleUser" style="display: inline; margin: 0; font-weight: 500; cursor: pointer;">
+              Patient
+            </label>
+            <p style="font-size: 12px; color: #666; margin: 4px 0 0 22px;">Book doctors & search medicines</p>
+          </div>
+          <div style="flex: 1;">
+            <input type="radio" id="roleAdmin" name="role" value="admin" style="margin-right: 6px; cursor: pointer;" />
+            <label for="roleAdmin" style="display: inline; margin: 0; font-weight: 500; cursor: pointer;">
+              Staff/Admin
+            </label>
+            <p style="font-size: 12px; color: #666; margin: 4px 0 0 22px;">Manage hospital resources</p>
+          </div>
+        </div>
+        <p style="font-size: 12px; color: #ff6b35; margin-top: 8px;">Admin requests require approval</p>
+      </div>
+
       <div class="terms-group">
         <input type="checkbox" id="terms" name="terms" required />
         <label for="terms" style="margin: 0;">
@@ -415,19 +436,36 @@
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
       const confirmPassword = document.getElementById('confirmPassword').value;
+      const role = document.querySelector('input[name="role"]:checked').value;
 
       errorMessage.classList.remove('show');
       signupBtn.disabled = true;
       signupBtn.classList.add('loading');
       signupBtn.innerHTML = '<span class="spinner"></span> Creating account...';
 
-      const result = await handleSignup({ name, phone, email, password, confirmPassword });
+      const result = await handleSignup({ name, phone, email, password, confirmPassword, role });
 
       if (result.success) {
-        console.log('Signup successful, redirecting to profile...');
-        // Redirect to complete profile (auth state observer will handle this)
+        if (result.message) {
+          errorMessage.textContent = result.message;
+          errorMessage.style.background = '#e8f5e9';
+          errorMessage.style.color = '#2e7d32';
+          errorMessage.style.borderLeftColor = '#2e7d32';
+        } else {
+          errorMessage.textContent = 'Account created successfully! Redirecting...';
+          errorMessage.style.background = '#e8f5e9';
+          errorMessage.style.color = '#2e7d32';
+          errorMessage.style.borderLeftColor = '#2e7d32';
+        }
+        errorMessage.classList.add('show');
+        setTimeout(() => {
+          // Auth state observer will handle redirect
+        }, 1500);
       } else {
         errorMessage.textContent = result.error;
+        errorMessage.style.background = '#ffebee';
+        errorMessage.style.color = '#c62828';
+        errorMessage.style.borderLeftColor = '#c62828';
         errorMessage.classList.add('show');
         signupBtn.disabled = false;
         signupBtn.classList.remove('loading');

@@ -8,28 +8,29 @@
    - Fetching doctors
    - Fetching notices
    - Search functionality
+   - Doctor booking
 =================================================== */
 
 'use strict';
 
-const { db } = window.firebaseServices;
-
 let allMedicines = [];
 let allDoctors = [];
 let allNotices = [];
+let currentUserId = null;
 
 /* ===================================================
    INITIALIZATION
 =================================================== */
 
 document.addEventListener('DOMContentLoaded', async () => {
-  // Wait for auth state to be ready
+  // Wait for auth state and db manager to be ready
   setTimeout(() => {
+    currentUserId = getCurrentUserId();
     loadUserProfile();
     loadMedicines();
     loadDoctors();
     loadNotices();
-  }, 500);
+  }, 1000);
 });
 
 /* ===================================================
@@ -53,13 +54,12 @@ async function loadUserProfile() {
 
 async function loadMedicines() {
   try {
-    const snapshot = await db.collection('medicines').get();
-    allMedicines = [];
-
-    snapshot.forEach(doc => {
-      allMedicines.push({ id: doc.id, ...doc.data() });
-    });
-
+    if (!window.dbManager) {
+      console.log('DB Manager not ready');
+      return;
+    }
+    
+    allMedicines = await window.dbManager.getMedicines();
     displayMedicines(allMedicines);
   } catch (error) {
     console.error('Error loading medicines:', error);
@@ -75,24 +75,28 @@ function displayMedicines(medicines) {
     return;
   }
 
-  grid.innerHTML = medicines.map(medicine => `
+  grid.innerHTML = medicines.map(medicine => {
+    const status = medicine.available && medicine.qty > 0 ? 'available' : 'unavailable';
+    const statusText = medicine.qty > 0 ? '✓ Available' : '✗ Out of Stock';
+    
+    return `
     <div class="medicine-card">
-      <div class="medicine-name">${medicine.medicineName || 'N/A'}</div>
-      <div class="medicine-company">${medicine.company || 'N/A'}</div>
+      <div class="medicine-name">${medicine.name || 'N/A'}</div>
+      <div class="medicine-company">${medicine.category || 'N/A'}</div>
       
       <div class="medicine-details">
         <div class="detail-item">
-          <span class="detail-label">Price</span>
-          <span class="detail-value">₹${parseFloat(medicine.price || 0).toFixed(2)}</span>
+          <span class="detail-label">Quantity</span>
+          <span class="detail-value">${medicine.qty || 0} ${medicine.unit || 'units'}</span>
         </div>
         <div class="detail-item">
-          <span class="detail-label">Stock</span>
-          <span class="detail-value">${medicine.stock || 0} units</span>
+          <span class="detail-label">Expiry</span>
+          <span class="detail-value">${medicine.expiry || 'N/A'}</span>
         </div>
       </div>
 
-      <span class="stock-status ${medicine.available ? 'available' : 'unavailable'}">
-        ${medicine.available ? '✓ Available' : '✗ Out of Stock'}
+      <span class="stock-status ${status}">
+        ${statusText}
       </span>
     </div>
   `).join('');
@@ -107,9 +111,9 @@ function searchMedicines() {
   }
 
   const filtered = allMedicines.filter(medicine => {
-    const name = (medicine.medicineName || '').toLowerCase();
-    const company = (medicine.company || '').toLowerCase();
-    return name.includes(query) || company.includes(query);
+    const name = (medicine.name || '').toLowerCase();
+    const category = (medicine.category || '').toLowerCase();
+    return name.includes(query) || category.includes(query);
   });
 
   displayMedicines(filtered);
@@ -121,26 +125,16 @@ function searchMedicines() {
 
 async function loadDoctors() {
   try {
-    // Try to load from Firestore first
-    const snapshot = await db.collection('doctors').get();
-    allDoctors = [];
-
-    snapshot.forEach(doc => {
-      allDoctors.push({ id: doc.id, ...doc.data() });
-    });
-
+    if (!window.dbManager) {
+      console.log('DB Manager not ready');
+      return;
+    }
+    
+    allDoctors = await window.dbManager.getDoctors();
     displayDoctors(allDoctors);
   } catch (error) {
-    console.warn('Firestore doctors not available, trying localStorage...');
-    // Fallback to localStorage for local testing
-    const localDoctors = JSON.parse(localStorage.getItem('lifecure_doctors') || '[]');
-    if (localDoctors.length > 0) {
-      allDoctors = localDoctors;
-      displayDoctors(allDoctors);
-    } else {
-      console.error('Error loading doctors:', error);
-      showEmptyState('doctorsGrid', 'No doctors available');
-    }
+    console.error('Error loading doctors:', error);
+    showEmptyState('doctorsGrid', 'No doctors available');
   }
 }
 
@@ -228,25 +222,52 @@ function submitBooking() {
   if (!appointmentDate) return showBookingError('Please select a date', errorEl);
   if (!appointmentTime) return showBookingError('Please select a time', errorEl);
 
-  // Save booking to localStorage
-  const bookings = JSON.parse(localStorage.getItem('lifecure_bookings') || '[]');
-  const newBooking = {
-    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
-    doctorId: doctorId,
-    userName: userName,
-    userPhone: userPhone,
-    appointmentDate: appointmentDate,
-    appointmentTime: appointmentTime,
-    reason: reason,
-    status: 'pending',
-    createdAt: new Date().toISOString()
-  };
-  
-  bookings.push(newBooking);
-  localStorage.setItem('lifecure_bookings', JSON.stringify(bookings));
+  // Find doctor name
+  const doctor = allDoctors.find(d => d.id === doctorId);
+  const doctorName = doctor?.name || 'Dr. Unknown';
 
-  alert('✓ Booking request submitted!\n\nYour appointment request has been sent to the admin for confirmation. You will receive a confirmation shortly.');
-  closeBookingModal();
+  // Save booking to Firestore
+  if (window.dbManager) {
+    window.dbManager.createBooking({
+      userId: currentUserId,
+      userName: userName,
+      userPhone: userPhone,
+      doctorId: doctorId,
+      doctorName: doctorName,
+      date: appointmentDate,
+      time: appointmentTime,
+      reason: reason || 'General Checkup'
+    }).then(result => {
+      if (result.success) {
+        alert('✓ Booking request submitted!\n\nYour appointment request has been sent to the admin for confirmation. You will receive updates shortly.');
+        closeBookingModal();
+      } else {
+        showBookingError('Failed to submit booking: ' + result.error, errorEl);
+      }
+    }).catch(error => {
+      showBookingError('Error: ' + error.message, errorEl);
+    });
+  } else {
+    // Fallback to localStorage if db-manager not available
+    const bookings = JSON.parse(localStorage.getItem('lifecure_bookings') || '[]');
+    const newBooking = {
+      id: window.dbManager?.genId() || (Date.now().toString(36) + Math.random().toString(36).slice(2, 7)),
+      userId: currentUserId,
+      doctorId: doctorId,
+      userName: userName,
+      userPhone: userPhone,
+      appointmentDate: appointmentDate,
+      appointmentTime: appointmentTime,
+      reason: reason,
+      status: 'pending',
+      createdAt: new Date().toISOString()
+    };
+    
+    bookings.push(newBooking);
+    localStorage.setItem('lifecure_bookings', JSON.stringify(bookings));
+    alert('✓ Booking request submitted!\n\nYour appointment request has been sent to the admin for confirmation.');
+    closeBookingModal();
+  }
 }
 
 function showBookingError(message, errorEl) {
@@ -260,13 +281,12 @@ function showBookingError(message, errorEl) {
 
 async function loadNotices() {
   try {
-    const snapshot = await db.collection('notices').orderBy('createdAt', 'desc').limit(10).get();
-    allNotices = [];
+    if (!window.dbManager) {
+      console.log('DB Manager not ready');
+      return;
+    }
 
-    snapshot.forEach(doc => {
-      allNotices.push({ id: doc.id, ...doc.data() });
-    });
-
+    allNotices = await window.dbManager.getNotices();
     displayNotices(allNotices);
   } catch (error) {
     console.error('Error loading notices:', error);

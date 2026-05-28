@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
   =================================================== */
   async function handleSignup(formData) {
     try {
-      const { name, phone, email, password, confirmPassword } = formData;
+      const { name, phone, email, password, confirmPassword, role = 'user' } = formData;
       if (!name || !phone || !email || !password) throw new Error('All fields are required');
       if (password !== confirmPassword) throw new Error('Passwords do not match');
       if (password.length < 6) throw new Error('Password must be at least 6 characters');
@@ -124,16 +124,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const result = await auth.createUserWithEmailAndPassword(email, password);
       const uid = result.user.uid;
+      
+      // If requesting admin role, set status as 'adminPending' and actual role as 'user'
+      // Admin must approve the role change
+      const isAdminRequest = role === 'admin';
+      const userRole = isAdminRequest ? 'user' : 'user';
+      
       await db.collection('users').doc(uid).set({
         uid, name, email, phone,
-        role: 'user',
+        role: userRole,
+        adminStatus: isAdminRequest ? 'pending' : null,
         profileCompleted: false,
         photoURL: null, dob: null, gender: null, bloodGroup: null,
         address: null, city: null, state: null, pincode: null,
         emergencyContact: null, allergies: null, diseases: null,
         createdAt: new Date()
       });
-      console.log('✓ User created:', uid);
+      console.log('✓ User created:', uid, '| Admin request:', isAdminRequest);
+      
+      if (isAdminRequest) {
+        return { success: true, uid, message: 'Admin approval pending. Contact system administrator.' };
+      }
       return { success: true, uid };
     } catch (error) {
       console.error('Signup error:', error.message);
