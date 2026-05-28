@@ -1,10 +1,13 @@
 /* ===================================================
-   lifecure Medicos — Admin Panel JavaScript
-   admin.js
-
-   ⚠️ IMPORTANT: Change credentials before going live!
-      Username: 'lifecure_admin'  → change to your own
-      Password: 'medicos2024'     → change to a strong password
+   LifeCure Medicos — Admin Dashboard
+   admin.js (Firebase Edition)
+   
+   Admin panel for:
+   - Medicine Management
+   - Doctor Management
+   - Notice Management
+   - User Management
+   - Analytics
 =================================================== */
 
 'use strict';
@@ -771,7 +774,7 @@ function generateReceipt() {
   const receiptHTML = `
     <div class="receipt-body">
       <div class="receipt-letterhead">
-        <h2>lifecure Medicos</h2>
+        <h2>LifeCure Medicos</h2>
         <p>Bazar Road, Bhanga Bazar, Sribhumi (Assam)</p>
         <p>Phone: 8473966611 / 7980560994 &nbsp;|&nbsp; Open: 7 AM – 11 PM</p>
       </div>
@@ -803,7 +806,7 @@ function generateReceipt() {
         <div class="receipt-grand">Total: ${inr(total)}</div>
       </div>
       <div class="receipt-footer">
-        Thank you for choosing lifecure Medicos. Get well soon!<br>
+        Thank you for choosing LifeCure Medicos. Get well soon!<br>
         "Your Health Is Our Priority"
       </div>
     </div>`;
@@ -827,7 +830,7 @@ function printReceipt() {
     <html>
     <head>
       <meta charset="UTF-8">
-      <title>Receipt — lifecure Medicos</title>
+      <title>Receipt — LifeCure Medicos</title>
       <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
       <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -905,7 +908,7 @@ function printTodayReport() {
       </style>
     </head>
     <body>
-      <h1>lifecure Medicos — Daily Report</h1>
+      <h1>LifeCure Medicos — Daily Report</h1>
       <p class="sub">${dateStr}</p>
 
       <h2>Today's Appointments (${appts.length})</h2>
@@ -922,7 +925,7 @@ function printTodayReport() {
 
       <p><strong>Expiring within 30 days:</strong> ${expSoon.length} item(s)</p>
 
-      <div class="footer">Printed from lifecure Medicos Admin Panel &nbsp;|&nbsp; "Your Health Is Our Priority"</div>
+      <div class="footer">Printed from LifeCure Medicos Admin Panel &nbsp;|&nbsp; "Your Health Is Our Priority"</div>
     </body>
     </html>`);
   printWin.document.close();

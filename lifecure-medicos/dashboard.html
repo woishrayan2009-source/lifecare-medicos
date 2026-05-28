@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — LifeCure Medicos</title>
+  <meta name="description" content="Your LifeCure Medicos dashboard" />
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <link rel="stylesheet" href="assets/css/dashboard.css" />
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <i class="fas fa-heart"></i>
+        <span>LifeCure Medicos</span>
+      </div>
+      <div class="nav-menu">
+        <a href="profile.html" class="nav-link">
+          <i class="fas fa-user-circle"></i> Profile
+        </a>
+        <button class="nav-link" onclick="handleLogout()">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container">
+
+    <!-- Welcome Section -->
+    <section class="welcome-section">
+      <h1>Welcome, <span id="userName">User</span>!</h1>
+      <p>Your Health Is Our Priority</p>
+    </section>
+
+    <!-- Search Medicines Section -->
+    <section class="search-section">
+      <h2><i class="fas fa-pills"></i> Search Medicines</h2>
+      <div class="search-box">
+        <input 
+          type="text" 
+          id="medicineSearch" 
+          placeholder="Search by medicine name, company..." 
+          onkeyup="searchMedicines()"
+        />
+        <i class="fas fa-search"></i>
+      </div>
+      <div class="medicines-grid" id="medicinesGrid">
+        <div class="loading-skeleton">
+          <div class="skeleton"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Doctors Section -->
+    <section class="doctors-section">
+      <h2><i class="fas fa-stethoscope"></i> Available Doctors</h2>
+      <div class="doctors-grid" id="doctorsGrid">
+        <div class="loading-skeleton">
+          <div class="skeleton"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Notices Section -->
+    <section class="notices-section">
+      <h2><i class="fas fa-bell"></i> Important Notices</h2>
+      <div class="notices-list" id="noticesList">
+        <div class="loading-skeleton">
+          <div class="skeleton"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Emergency Contact Section -->
+    <section class="emergency-section">
+      <h2><i class="fas fa-phone"></i> Contact Us</h2>
+      <div class="contact-cards">
+        <div class="contact-card">
+          <h3>Call Us</h3>
+          <p><a href="tel:8473966611" class="phone-link">8473966611</a></p>
+          <p><a href="tel:7980560994" class="phone-link">7980560994</a></p>
+        </div>
+        <div class="contact-card">
+          <h3>WhatsApp</h3>
+          <p><a href="https://wa.me/918473966611" target="_blank" class="whatsapp-link">
+            <i class="fab fa-whatsapp"></i> Chat with us
+          </a></p>
+        </div>
+        <div class="contact-card">
+          <h3>Store Timings</h3>
+          <p>7 AM – 11 PM</p>
+          <p style="color: #1a6b4a; font-weight: 600;">Everyday</p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; 2026 LifeCure Medicos. All rights reserved.</p>
+  </footer>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-storage.js"></script>
+
+  <!-- Config & Auth -->
+  <script src="assets/js/firebase-config.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/dashboard.js"></script>
+
+</body>
+</html>

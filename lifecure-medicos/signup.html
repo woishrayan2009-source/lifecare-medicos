@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up — LifeCure Medicos</title>
+  <meta name="description" content="Create your LifeCure Medicos account" />
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1a6b4a 0%, #2d8f63 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .signup-container {
+      background: white;
+      border-radius: 16px;
+      padding: 40px;
+      max-width: 450px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .signup-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .signup-logo {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      background: #e8f5e9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      font-size: 32px;
+      color: #1a6b4a;
+    }
+
+    .signup-header h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1a6b4a;
+      margin-bottom: 4px;
+    }
+
+    .signup-header p {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: #1c1c1c;
+      margin-bottom: 6px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #1a6b4a;
+      box-shadow: 0 0 0 3px rgba(26, 107, 74, 0.1);
+    }
+
+    .password-strength {
+      margin-top: 6px;
+      height: 4px;
+      background: #e0e0e0;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .password-strength-bar {
+      height: 100%;
+      width: 0%;
+      transition: all 0.3s;
+    }
+
+    .strength-text {
+      font-size: 12px;
+      margin-top: 4px;
+      font-weight: 600;
+    }
+
+    .strength-weak { color: #e53935; }
+    .strength-fair { color: #ff6b35; }
+    .strength-good { color: #f9a825; }
+    .strength-strong { color: #4caf50; }
+
+    .terms-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 20px;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .terms-group input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: #1a6b4a;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .terms-group a {
+      color: #1a6b4a;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .terms-group a:hover {
+      text-decoration: underline;
+    }
+
+    .btn-signup {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #1a6b4a 0%, #2d8f63 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-signup:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(26, 107, 74, 0.3);
+    }
+
+    .btn-signup:active {
+      transform: translateY(0);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 24px 0;
+      color: #999;
+      font-size: 14px;
+    }
+
+    .divider span {
+      flex: 1;
+      height: 1px;
+      background: #e0e0e0;
+    }
+
+    .btn-google {
+      width: 100%;
+      padding: 12px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 10px;
+      background: white;
+      color: #1c1c1c;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn-google:hover {
+      border-color: #1a6b4a;
+      background: #f8fffe;
+    }
+
+    .signup-footer {
+      text-align: center;
+      font-size: 14px;
+      color: #666;
+      margin-top: 20px;
+    }
+
+    .signup-footer a {
+      color: #1a6b4a;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .signup-footer a:hover {
+      text-decoration: underline;
+    }
+
+    .error-message {
+      background: #ffebee;
+      color: #c62828;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+      font-size: 14px;
+      border-left: 4px solid #c62828;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    .loading {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 0.8s linear infinite;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .back-link {
+      text-align: center;
+      margin-top: 16px;
+    }
+
+    .back-link a {
+      color: #1a6b4a;
+      text-decoration: none;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="signup-container">
+    
+    <div class="signup-header">
+      <div class="signup-logo">
+        <i class="fas fa-user-plus"></i>
+      </div>
+      <h1>Create Account</h1>
+      <p>Join LifeCure Medicos today</p>
+    </div>
+
+    <div id="errorMessage" class="error-message"></div>
+
+    <form id="signupForm">
+      <div class="form-group">
+        <label for="name">Full Name *</label>
+        <input 
+          type="text" 
+          id="name" 
+          name="name" 
+          placeholder="Enter your full name" 
+          required 
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Phone Number *</label>
+        <input 
+          type="tel" 
+          id="phone" 
+          name="phone" 
+          placeholder="Enter your phone number" 
+          pattern="[0-9]{10}" 
+          required 
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address *</label>
+        <input 
+          type="email" 
+          id="email" 
+          name="email" 
+          placeholder="Enter your email" 
+          required 
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password *</label>
+        <input 
+          type="password" 
+          id="password" 
+          name="password" 
+          placeholder="At least 6 characters" 
+          minlength="6"
+          required 
+          onchange="checkPasswordStrength()"
+        />
+        <div class="password-strength">
+          <div class="password-strength-bar" id="strengthBar"></div>
+        </div>
+        <div class="strength-text" id="strengthText"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password *</label>
+        <input 
+          type="password" 
+          id="confirmPassword" 
+          name="confirmPassword" 
+          placeholder="Re-enter your password" 
+          required 
+        />
+      </div>
+
+      <div class="terms-group">
+        <input type="checkbox" id="terms" name="terms" required />
+        <label for="terms" style="margin: 0;">
+          I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+        </label>
+      </div>
+
+      <button type="submit" class="btn-signup" id="signupBtn">
+        <i class="fas fa-user-plus"></i> Create Account
+      </button>
+    </form>
+
+    <div class="divider">
+      <span></span>
+      <span>or sign up with</span>
+      <span></span>
+    </div>
+
+    <button class="btn-google" onclick="signupWithGoogle()">
+      <svg width="18" height="18" viewBox="0 0 24 24">
+        <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+        <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+        <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+        <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+      </svg>
+      Sign up with Google
+    </button>
+
+    <div class="signup-footer">
+      Already have an account? <a href="login.html">Login here</a>
+    </div>
+
+    <div class="back-link">
+      <a href="index.html">
+        <i class="fas fa-arrow-left"></i> Back to website
+      </a>
+    </div>
+
+  </div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.4.0/firebase-storage.js"></script>
+
+  <!-- Firebase Config -->
+  <script src="assets/js/firebase-config.js"></script>
+  <!-- Auth Module -->
+  <script src="assets/js/auth.js"></script>
+
+  <script>
+    const form = document.getElementById('signupForm');
+    const errorMessage = document.getElementById('errorMessage');
+    const signupBtn = document.getElementById('signupBtn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value;
+      const phone = document.getElementById('phone').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      errorMessage.classList.remove('show');
+      signupBtn.disabled = true;
+      signupBtn.classList.add('loading');
+      signupBtn.innerHTML = '<span class="spinner"></span> Creating account...';
+
+      const result = await handleSignup({ name, phone, email, password, confirmPassword });
+
+      if (result.success) {
+        console.log('Signup successful, redirecting to profile...');
+        // Redirect to complete profile (auth state observer will handle this)
+      } else {
+        errorMessage.textContent = result.error;
+        errorMessage.classList.add('show');
+        signupBtn.disabled = false;
+        signupBtn.classList.remove('loading');
+        signupBtn.innerHTML = '<i class="fas fa-user-plus"></i> Create Account';
+      }
+    });
+
+    async function signupWithGoogle() {
+      const result = await handleGoogleLogin();
+      errorMessage.classList.remove('show');
+
+      if (!result.success) {
+        errorMessage.textContent = result.error;
+        errorMessage.classList.add('show');
+      }
+    }
+
+    function checkPasswordStrength() {
+      const password = document.getElementById('password').value;
+      const bar = document.getElementById('strengthBar');
+      const text = document.getElementById('strengthText');
+
+      let strength = 0;
+      if (password.length >= 6) strength++;
+      if (password.length >= 8) strength++;
+      if (/[A-Z]/.test(password)) strength++;
+      if (/[0-9]/.test(password)) strength++;
+      if (/[!@#$%^&*]/.test(password)) strength++;
+
+      const strengths = ['', 'Weak', 'Fair', 'Good', 'Strong', 'Very Strong'];
+      const colors = ['', '#e53935', '#ff6b35', '#f9a825', '#4caf50', '#2e7d32'];
+      const widths = ['0%', '20%', '40%', '60%', '80%', '100%'];
+
+      bar.style.backgroundColor = colors[strength];
+      bar.style.width = widths[strength];
+      text.textContent = strengths[strength];
+      text.className = `strength-text strength-${strengths[strength].toLowerCase()}`;
+    }
+  </script>
+
+</body>
+</html>
