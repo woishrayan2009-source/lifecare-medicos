@@ -1,0 +1,7 @@
+{
+  "name": "lifecure-medicos",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "npx live-server --port=5500 --open=admin.html"
+  }
+}

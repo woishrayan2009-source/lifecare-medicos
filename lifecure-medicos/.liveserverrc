@@ -1,0 +1,6 @@
+{
+  "root": ".",
+  "port": 5500,
+  "open": true,
+  "ignore": "node_modules"
+}
