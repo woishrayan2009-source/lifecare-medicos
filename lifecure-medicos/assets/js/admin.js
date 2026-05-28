@@ -14,7 +14,10 @@ let auth, db, storage;
    STORAGE KEYS
 =================================================== */
 const KEY_MEDICINES    = 'lifecure_medicines';
+const KEY_DOCTORS      = 'lifecure_doctors';
+const KEY_DOCTOR_TIMINGS = 'lifecure_doctor_timings';
 const KEY_APPOINTMENTS = 'lifecure_appointments';
+const KEY_BOOKINGS     = 'lifecure_bookings';
 const KEY_BILL_NUM     = 'lifecure_bill_number';
 
 /* ===================================================
@@ -80,6 +83,24 @@ function getAppointments() {
 function saveAppointments(arr) {
   localStorage.setItem(KEY_APPOINTMENTS, JSON.stringify(arr));
 }
+function getDoctors() {
+  return JSON.parse(localStorage.getItem(KEY_DOCTORS) || '[]');
+}
+function saveDoctors(arr) {
+  localStorage.setItem(KEY_DOCTORS, JSON.stringify(arr));
+}
+function getDoctorTimings() {
+  return JSON.parse(localStorage.getItem(KEY_DOCTOR_TIMINGS) || '[]');
+}
+function saveDoctorTimings(arr) {
+  localStorage.setItem(KEY_DOCTOR_TIMINGS, JSON.stringify(arr));
+}
+function getBookings() {
+  return JSON.parse(localStorage.getItem(KEY_BOOKINGS) || '[]');
+}
+function saveBookings(arr) {
+  localStorage.setItem(KEY_BOOKINGS, JSON.stringify(arr));
+}
 function getNextBillNum() {
   const n = parseInt(localStorage.getItem(KEY_BILL_NUM) || '999') + 1;
   localStorage.setItem(KEY_BILL_NUM, n);
@@ -108,6 +129,45 @@ function seedSampleData() {
       { id: genId(), patient: 'Sunita Devi',  phone: '8765432109', doctor: 'Dr. Sandip Roy',      date: addDays(2),  time: '13:30', status: 'Scheduled', notes: 'Skin allergy follow-up' },
       { id: genId(), patient: 'Rajesh Kumar', phone: '7654321098', doctor: 'Dr. Shirsendu Roy',   date: addDays(-1), time: '14:00', status: 'Completed', notes: 'Fever and cough' },
     ]);
+  }
+  if (!localStorage.getItem(KEY_DOCTORS)) {
+    saveDoctors([
+      { id: genId(), name: 'Dr. Saddam Hussain', specialty: 'General', experience: 15, available: true, qualifications: 'MBBS, MD', notes: '' },
+      { id: genId(), name: 'Dr. Sandip Roy', specialty: 'Dermatology', experience: 12, available: true, qualifications: 'MBBS, MD Dermatology', notes: '' },
+      { id: genId(), name: 'Dr. Shirsendu Roy', specialty: 'Cardiology', experience: 18, available: true, qualifications: 'MBBS, MD Cardiology', notes: '' },
+      { id: genId(), name: 'Dr. Intekhab Alam', specialty: 'Pediatrics', experience: 10, available: true, qualifications: 'MBBS, MD Pediatrics', notes: '' },
+    ]);
+  }
+  if (!localStorage.getItem(KEY_DOCTOR_TIMINGS)) {
+    // Sample timings - Monday to Saturday, 9 AM to 6 PM with lunch break
+    const doctors = getDoctors();
+    const timings = [];
+    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    doctors.forEach(doc => {
+      days.forEach(day => {
+        timings.push({ 
+          id: genId(), 
+          doctorId: doc.id, 
+          doctorName: doc.name,
+          day: day, 
+          startTime: '09:00', 
+          endTime: '13:00',
+          slotDuration: 30, // minutes
+          break: true 
+        });
+        timings.push({ 
+          id: genId(), 
+          doctorId: doc.id, 
+          doctorName: doc.name,
+          day: day, 
+          startTime: '14:00', 
+          endTime: '18:00',
+          slotDuration: 30,
+          break: false 
+        });
+      });
+    });
+    saveDoctorTimings(timings);
   }
 }
 
@@ -268,6 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
 const SECTION_TITLES = {
   dashboard:    'Dashboard',
   medicines:    'Medicine Stock',
+  doctors:      'Doctors Management',
   appointments: 'Appointments Log',
   billing:      'Billing & Receipts',
 };
@@ -283,6 +344,7 @@ function switchSection(name, clickedEl) {
   if (window.innerWidth <= 768) closeSidebar();
   if (name === 'dashboard')    renderDashboard();
   if (name === 'medicines')    renderMedicinesTable();
+  if (name === 'doctors')      renderDoctorsTable();
   if (name === 'appointments') renderApptsTable();
   if (name === 'billing')      initBilling();
 }
@@ -311,7 +373,9 @@ function initDashboard() {
 function renderDashboard() {
   const meds  = getMedicines();
   const appts = getAppointments();
+  const bookings = getBookings();
   const today = todayISO();
+  const pendingBookings = bookings.filter(b => b.status === 'pending');
 
   document.getElementById('statTotal').textContent    = meds.length;
   document.getElementById('statLow').textContent      = meds.filter(m => parseInt(m.qty) < 10).length;
@@ -320,6 +384,12 @@ function renderDashboard() {
 
   const alertsEl = document.getElementById('stockAlerts');
   const alerts = [];
+  
+  // Add booking alerts
+  if (pendingBookings.length > 0) {
+    alerts.push({ cls: 'info', icon: 'fa-calendar-plus', msg: `<strong>${pendingBookings.length} pending booking(s)</strong> awaiting confirmation` });
+  }
+  
   meds.forEach(m => {
     const days = daysUntilExpiry(m.expiry);
     if (days < 0)       alerts.push({ cls: 'danger', icon: 'fa-calendar-xmark',      msg: `<strong>${m.name}</strong> has expired (${formatDate(m.expiry)})` });
@@ -330,7 +400,7 @@ function renderDashboard() {
   });
 
   alertsEl.innerHTML = alerts.length === 0
-    ? '<p class="no-alerts"><i class="fas fa-check-circle" style="color:var(--green)"></i> No stock alerts. Everything looks good!</p>'
+    ? '<p class="no-alerts"><i class="fas fa-check-circle" style="color:var(--green)"></i> No alerts. Everything looks good!</p>'
     : alerts.slice(0, 10).map(a => `<div class="alert-item ${a.cls}"><i class="fas ${a.icon}"></i><span>${a.msg}</span></div>`).join('')
       + (alerts.length > 10 ? `<p style="font-size:0.82rem;color:var(--muted);margin-top:8px">+${alerts.length - 10} more alerts.</p>` : '');
 }
@@ -466,8 +536,130 @@ document.addEventListener('change', e => {
   }
 });
 
-/* ===================================================
-   SECTION 3: APPOINTMENTS
+/* ===================================================   SECTION 2B: DOCTORS MANAGEMENT
+=================================================== */
+function renderDoctorsTable() {
+  const search = (document.getElementById('docSearch')?.value || '').toLowerCase();
+  const specialty = document.getElementById('docSpecialty')?.value || 'all';
+  let doctors = getDoctors().filter(d => {
+    const matchSearch = d.name.toLowerCase().includes(search) || d.specialty.toLowerCase().includes(search);
+    const matchSpecialty = specialty === 'all' || d.specialty === specialty;
+    return matchSearch && matchSpecialty;
+  });
+  doctors.sort((a, b) => a.name.localeCompare(b.name));
+  const tbody = document.getElementById('docTableBody');
+  const empty = document.getElementById('docEmpty');
+  if (doctors.length === 0) { tbody.innerHTML = ''; empty.classList.remove('hidden'); return; }
+  empty.classList.add('hidden');
+  tbody.innerHTML = doctors.map((d, i) => {
+    const timings = getDoctorTimings().filter(t => t.doctorId === d.id);
+    const scheduleStr = timings.length > 0 ? `${timings.length} slots` : 'No schedule';
+    const availBadge = d.available 
+      ? '<span class="badge badge-green">Available</span>' 
+      : '<span class="badge badge-red">Unavailable</span>';
+    return `<tr id="doc-row-${d.id}">
+      <td>${i+1}</td>
+      <td><strong>${escHtml(d.name)}</strong>${d.qualifications ? `<br><small style="color:var(--muted)">${escHtml(d.qualifications)}</small>` : ''}</td>
+      <td><span class="badge badge-grey">${escHtml(d.specialty)}</span></td>
+      <td>${d.experience || 0} years</td>
+      <td>${availBadge}</td>
+      <td><small>${scheduleStr}</small></td>
+      <td><div class="action-btns">
+        <button class="btn-icon edit" title="Edit" onclick="editDoctor('${d.id}')"><i class="fas fa-pen"></i></button>
+        <button class="btn-icon info" title="Timings" onclick="manageDoctorTimings('${d.id}')"><i class="fas fa-clock"></i></button>
+        <button class="btn-icon del" title="Delete" onclick="confirmDeleteDoctor('${d.id}')"><i class="fas fa-trash-can"></i></button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+function openDoctorModal(editId = null) {
+  clearDoctorModal();
+  if (editId) {
+    const d = getDoctors().find(x => x.id === editId);
+    if (!d) return;
+    document.getElementById('docModalTitle').textContent = 'Edit Doctor';
+    document.getElementById('docEditId').value = d.id;
+    document.getElementById('docName').value = d.name;
+    document.getElementById('docSpecialtyInput').value = d.specialty;
+    document.getElementById('docExperience').value = d.experience || 0;
+    document.getElementById('docAvailable').checked = d.available;
+    document.getElementById('docAvailLabel').textContent = d.available ? 'Available' : 'Not Available';
+    document.getElementById('docQualifications').value = d.qualifications || '';
+    document.getElementById('docNotes').value = d.notes || '';
+  } else {
+    document.getElementById('docModalTitle').textContent = 'Add Doctor';
+  }
+  document.getElementById('doctorModal').classList.remove('hidden');
+}
+
+function clearDoctorModal() {
+  ['docEditId','docName','docExperience','docQualifications','docNotes'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('docSpecialtyInput').value = '';
+  document.getElementById('docAvailable').checked = true;
+  document.getElementById('docAvailLabel').textContent = 'Available';
+  document.getElementById('docModalError').classList.add('hidden');
+}
+
+function closeDoctorModal() { document.getElementById('doctorModal').classList.add('hidden'); }
+
+function editDoctor(id) { openDoctorModal(id); }
+
+function saveDoctor() {
+  const editId = document.getElementById('docEditId').value;
+  const name = document.getElementById('docName').value.trim();
+  const specialty = document.getElementById('docSpecialtyInput').value;
+  const experience = parseInt(document.getElementById('docExperience').value) || 0;
+  const available = document.getElementById('docAvailable').checked;
+  const qualifications = document.getElementById('docQualifications').value.trim();
+  const notes = document.getElementById('docNotes').value.trim();
+  const errEl = document.getElementById('docModalError');
+
+  if (!name) return showModalError(errEl, 'Doctor name is required.');
+  if (!specialty) return showModalError(errEl, 'Please select a specialty.');
+  if (experience < 0) return showModalError(errEl, 'Experience must be a positive number.');
+
+  let doctors = getDoctors();
+  const dup = doctors.find(d => d.name.toLowerCase() === name.toLowerCase() && d.id !== editId);
+  if (dup) return showModalError(errEl, 'A doctor with this name already exists.');
+
+  if (editId) {
+    doctors = doctors.map(d => d.id === editId ? { ...d, name, specialty, experience, available, qualifications, notes } : d);
+  } else {
+    doctors.push({ id: genId(), name, specialty, experience, available, qualifications, notes });
+  }
+
+  saveDoctors(doctors);
+  closeDoctorModal();
+  renderDoctorsTable();
+  renderDashboard();
+}
+
+function confirmDeleteDoctor(id) {
+  const d = getDoctors().find(x => x.id === id);
+  if (!d) return;
+  openConfirm(`Delete "<strong>${escHtml(d.name)}</strong>"? This cannot be undone.`, () => {
+    saveDoctors(getDoctors().filter(x => x.id !== id));
+    // Also delete associated timings
+    saveDoctorTimings(getDoctorTimings().filter(t => t.doctorId !== id));
+    renderDoctorsTable();
+    renderDashboard();
+  });
+}
+
+function manageDoctorTimings(doctorId) {
+  const doc = getDoctors().find(d => d.id === doctorId);
+  if (!doc) return;
+  alert(`Manage timings for ${doc.name}.\n\nFeature coming soon: Configure working days and hours.`);
+}
+
+document.addEventListener('change', e => {
+  if (e.target && e.target.id === 'docAvailable') {
+    document.getElementById('docAvailLabel').textContent = e.target.checked ? 'Available' : 'Not Available';
+  }
+});
+
+/* ===================================================   SECTION 3: APPOINTMENTS
 =================================================== */
 function renderApptsTable() {
   const search       = (document.getElementById('apptSearch')?.value || '').toLowerCase();
@@ -503,6 +695,20 @@ function renderApptsTable() {
       </div></td>
     </tr>`;
   }).join('');
+}
+
+function switchApptTab(tab, clickedBtn) {
+  // Hide all views
+  document.querySelectorAll('.appt-view-section').forEach(v => v.classList.add('hidden'));
+  document.querySelectorAll('.tab-switch').forEach(b => b.classList.remove('active'));
+  
+  // Show selected view
+  document.getElementById('apptView-' + tab).classList.remove('hidden');
+  clickedBtn.classList.add('active');
+  
+  // Render the appropriate data
+  if (tab === 'scheduled') renderApptsTable();
+  if (tab === 'pending') renderPendingBookings();
 }
 
 function openApptModal(editId = null) {
@@ -579,8 +785,75 @@ function confirmDeleteAppt(id) {
   });
 }
 
-/* ===================================================
-   SECTION 4: BILLING
+/* ===================================================   BOOKINGS: USER APPOINTMENT REQUESTS
+=================================================== */
+function renderPendingBookings() {
+  const bookings = getBookings().filter(b => b.status === 'pending');
+  const doctors = getDoctors();
+  const tbody = document.getElementById('pendingBookingsBody');
+  if (!tbody) return;
+  
+  if (bookings.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--muted)"><i class="fas fa-check-circle"></i> No pending bookings</td></tr>';
+    return;
+  }
+  
+  tbody.innerHTML = bookings.map((b, i) => {
+    const doctor = doctors.find(d => d.id === b.doctorId);
+    const doctorName = doctor ? doctor.name : 'Unknown Doctor';
+    return `<tr id="booking-row-${b.id}">
+      <td>${i+1}</td>
+      <td><strong>${escHtml(b.userName)}</strong><br><small style="color:var(--muted)">${escHtml(b.userPhone)}</small></td>
+      <td><strong>${escHtml(doctorName)}</strong></td>
+      <td>${formatDate(b.appointmentDate)}</td>
+      <td>${formatTime(b.appointmentTime)}</td>
+      <td><small>${escHtml(b.reason || 'No reason provided')}</small></td>
+      <td><span class="badge badge-orange">Pending</span></td>
+      <td><div class="action-btns">
+        <button class="btn-icon green" title="Approve" onclick="approveBooking('${b.id}')"><i class="fas fa-check"></i></button>
+        <button class="btn-icon red" title="Reject" onclick="rejectBooking('${b.id}')"><i class="fas fa-times"></i></button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+function approveBooking(bookingId) {
+  const bookings = getBookings();
+  const booking = bookings.find(b => b.id === bookingId);
+  if (!booking) return;
+  
+  // Create an appointment from the booking
+  const newAppt = {
+    id: genId(),
+    patient: booking.userName,
+    phone: booking.userPhone,
+    doctor: getDoctors().find(d => d.id === booking.doctorId)?.name || 'Unknown',
+    date: booking.appointmentDate,
+    time: booking.appointmentTime,
+    status: 'Scheduled',
+    notes: booking.reason || ''
+  };
+  
+  // Add to appointments and mark booking as confirmed
+  saveAppointments([...getAppointments(), newAppt]);
+  booking.status = 'confirmed';
+  saveBookings(bookings);
+  
+  renderApptsTable();
+  renderPendingBookings();
+  renderDashboard();
+}
+
+function rejectBooking(bookingId) {
+  openConfirm('Reject this booking request?', () => {
+    const bookings = getBookings().map(b => b.id === bookingId ? { ...b, status: 'rejected' } : b);
+    saveBookings(bookings);
+    renderPendingBookings();
+    renderDashboard();
+  });
+}
+
+/* ===================================================   SECTION 4: BILLING
 =================================================== */
 let billItems = [];
 

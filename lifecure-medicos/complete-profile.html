@@ -594,7 +594,7 @@
           updateData.photoURL = photoURL;
         }
 
-        await db.collection('users').doc(userId).update(updateData);
+        await db.collection('users').doc(userId).set(updateData, {merge: true});
 
         successMessage.textContent = 'Profile completed successfully! Redirecting...';
         successMessage.classList.add('show');
@@ -630,10 +630,10 @@
 
       try {
         // Mark profile as completed anyway
-        await db.collection('users').doc(userId).update({
+        await db.collection('users').doc(userId).set({
           profileCompleted: true,
           updatedAt: new Date()
-        });
+        }, {merge: true});
         window.location.href = 'dashboard.html';
       } catch (error) {
         console.error('Skip error:', error);

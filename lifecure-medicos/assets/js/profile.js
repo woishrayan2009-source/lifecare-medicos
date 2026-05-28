@@ -170,8 +170,8 @@ document.getElementById('profileForm')?.addEventListener('submit', async (e) => 
       updateData.photoURL = photoURL;
     }
 
-    // Update in Firestore
-    await db.collection('users').doc(userId).update(updateData);
+    // Update in Firestore (use set with merge to create if not exists)
+    await db.collection('users').doc(userId).set(updateData, {merge: true});
 
     showSuccess('Profile updated successfully!');
 

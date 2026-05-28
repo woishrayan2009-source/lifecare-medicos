@@ -121,6 +121,7 @@ function searchMedicines() {
 
 async function loadDoctors() {
   try {
+    // Try to load from Firestore first
     const snapshot = await db.collection('doctors').get();
     allDoctors = [];
 
@@ -130,8 +131,16 @@ async function loadDoctors() {
 
     displayDoctors(allDoctors);
   } catch (error) {
-    console.error('Error loading doctors:', error);
-    showEmptyState('doctorsGrid', 'No doctors available');
+    console.warn('Firestore doctors not available, trying localStorage...');
+    // Fallback to localStorage for local testing
+    const localDoctors = JSON.parse(localStorage.getItem('lifecure_doctors') || '[]');
+    if (localDoctors.length > 0) {
+      allDoctors = localDoctors;
+      displayDoctors(allDoctors);
+    } else {
+      console.error('Error loading doctors:', error);
+      showEmptyState('doctorsGrid', 'No doctors available');
+    }
   }
 }
 
@@ -143,24 +152,32 @@ function displayDoctors(doctors) {
     return;
   }
 
-  grid.innerHTML = doctors.map(doctor => `
+  grid.innerHTML = doctors.map(doctor => {
+    // Support both Firestore and localStorage data structures
+    const name = doctor.doctorName || doctor.name || 'Dr. Unknown';
+    const specialty = doctor.specialization || doctor.specialty || 'General';
+    const timing = doctor.timing || '9 AM - 6 PM';
+    const available = doctor.available !== false;
+    const experience = doctor.experience || 0;
+    
+    return `
     <div class="doctor-card">
       <div class="doctor-photo">
         ${doctor.photoURL ? 
-          `<img src="${doctor.photoURL}" alt="${doctor.doctorName}" />` : 
+          `<img src="${doctor.photoURL}" alt="${name}" />` : 
           '<i class="fas fa-user-doctor"></i>'
         }
       </div>
       
-      <div class="doctor-name">${doctor.doctorName || 'Dr. Unknown'}</div>
-      <div class="doctor-specialization">${doctor.specialization || 'General Physician'}</div>
+      <div class="doctor-name">${name}</div>
+      <div class="doctor-specialization">${specialty}${experience > 0 ? ` • ${experience} yrs` : ''}</div>
       
       <div class="doctor-timing">
-        <i class="fas fa-clock"></i> ${doctor.timing || '9 AM - 6 PM'}
+        <i class="fas fa-clock"></i> ${timing}
       </div>
 
-      <span class="doctor-status ${doctor.available ? 'available' : 'unavailable'}">
-        ${doctor.available ? '✓ Available' : '✗ On Leave'}
+      <span class="doctor-status ${available ? 'available' : 'unavailable'}">
+        ${available ? '✓ Available' : '✗ On Leave'}
       </span>
 
       ${doctor.leaveNotice ? `
@@ -168,8 +185,73 @@ function displayDoctors(doctors) {
           <strong>Notice:</strong> ${doctor.leaveNotice}
         </div>
       ` : ''}
+
+      ${available ? `
+        <button class="btn-book" onclick="openBookingModal('${doctor.id}', '${name}')">
+          <i class="fas fa-calendar-plus"></i> Book Appointment
+        </button>
+      ` : ''}
     </div>
   `).join('');
+}
+
+function openBookingModal(doctorId, doctorName) {
+  const modal = document.getElementById('bookingModal');
+  if (!modal) {
+    console.error('Booking modal not found');
+    return;
+  }
+  
+  document.getElementById('bookingDoctorId').value = doctorId;
+  document.getElementById('bookingDoctorName').textContent = doctorName;
+  document.getElementById('bookingForm').reset();
+  document.getElementById('bookingError').classList.add('hidden');
+  modal.classList.remove('hidden');
+}
+
+function closeBookingModal() {
+  const modal = document.getElementById('bookingModal');
+  if (modal) modal.classList.add('hidden');
+}
+
+function submitBooking() {
+  const doctorId = document.getElementById('bookingDoctorId').value;
+  const userName = document.getElementById('bookingName').value.trim();
+  const userPhone = document.getElementById('bookingPhone').value.trim();
+  const appointmentDate = document.getElementById('bookingDate').value;
+  const appointmentTime = document.getElementById('bookingTime').value;
+  const reason = document.getElementById('bookingReason').value.trim();
+  const errorEl = document.getElementById('bookingError');
+
+  if (!userName) return showBookingError('Please enter your name', errorEl);
+  if (!userPhone || userPhone.length < 10) return showBookingError('Please enter a valid phone number', errorEl);
+  if (!appointmentDate) return showBookingError('Please select a date', errorEl);
+  if (!appointmentTime) return showBookingError('Please select a time', errorEl);
+
+  // Save booking to localStorage
+  const bookings = JSON.parse(localStorage.getItem('lifecure_bookings') || '[]');
+  const newBooking = {
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+    doctorId: doctorId,
+    userName: userName,
+    userPhone: userPhone,
+    appointmentDate: appointmentDate,
+    appointmentTime: appointmentTime,
+    reason: reason,
+    status: 'pending',
+    createdAt: new Date().toISOString()
+  };
+  
+  bookings.push(newBooking);
+  localStorage.setItem('lifecure_bookings', JSON.stringify(bookings));
+
+  alert('✓ Booking request submitted!\n\nYour appointment request has been sent to the admin for confirmation. You will receive a confirmation shortly.');
+  closeBookingModal();
+}
+
+function showBookingError(message, errorEl) {
+  errorEl.textContent = message;
+  errorEl.classList.remove('hidden');
 }
 
 /* ===================================================

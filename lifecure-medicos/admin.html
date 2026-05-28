@@ -100,6 +100,9 @@
         <a href="#" class="nav-item" data-section="medicines" onclick="switchSection('medicines', this)">
           <i class="fas fa-pills"></i><span>Medicine Stock</span>
         </a>
+        <a href="#" class="nav-item" data-section="doctors" onclick="switchSection('doctors', this)">
+          <i class="fas fa-stethoscope"></i><span>Doctors</span>
+        </a>
         <a href="#" class="nav-item" data-section="appointments" onclick="switchSection('appointments', this)">
           <i class="fas fa-calendar-check"></i><span>Appointments</span>
         </a>
@@ -144,6 +147,9 @@
         </button>
         <button class="tab-btn" data-section="medicines" onclick="switchSection('medicines', this)">
           <i class="fas fa-pills"></i><span>Stock</span>
+        </button>
+        <button class="tab-btn" data-section="doctors" onclick="switchSection('doctors', this)">
+          <i class="fas fa-stethoscope"></i><span>Doctors</span>
         </button>
         <button class="tab-btn" data-section="appointments" onclick="switchSection('appointments', this)">
           <i class="fas fa-calendar-check"></i><span>Appts</span>
@@ -275,6 +281,60 @@
       </section>
 
       <!-- =====================
+           SECTION: DOCTORS
+      ===================== -->
+      <section class="content-section" id="sec-doctors">
+        <div class="section-header">
+          <h2>Doctors Management</h2>
+          <button class="btn-primary" onclick="openDoctorModal()">
+            <i class="fas fa-plus"></i> Add Doctor
+          </button>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="table-toolbar">
+          <div class="search-wrap">
+            <i class="fas fa-magnifying-glass"></i>
+            <input type="text" id="docSearch" placeholder="Search doctors…" oninput="renderDoctorsTable()" />
+          </div>
+          <div class="filter-group">
+            <select id="docSpecialty" onchange="renderDoctorsTable()">
+              <option value="all">All Specialties</option>
+              <option value="General">General Physician</option>
+              <option value="Cardiology">Cardiology</option>
+              <option value="Dermatology">Dermatology</option>
+              <option value="Orthopedic">Orthopedic</option>
+              <option value="Pediatrics">Pediatrics</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-wrap">
+          <table class="data-table" id="docTable">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Doctor Name</th>
+                <th>Specialty</th>
+                <th>Experience</th>
+                <th>Available</th>
+                <th>Timings</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="docTableBody">
+            </tbody>
+          </table>
+          <div class="empty-state hidden" id="docEmpty">
+            <i class="fas fa-user-doctor"></i>
+            <p>No doctors added yet.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================
            SECTION: APPOINTMENTS
       ===================== -->
       <section class="content-section" id="sec-appointments">
@@ -285,50 +345,84 @@
           </button>
         </div>
 
-        <!-- Filters -->
-        <div class="table-toolbar">
-          <div class="search-wrap">
-            <i class="fas fa-magnifying-glass"></i>
-            <input type="text" id="apptSearch" placeholder="Search by patient name…" oninput="renderApptsTable()" />
+        <!-- Tabs for appointments and pending bookings -->
+        <div class="tabs-bar" style="margin-bottom: 20px; border-bottom: 1px solid var(--border); display: flex; gap: 20px;">
+          <button class="tab-switch active" onclick="switchApptTab('scheduled', this)">
+            <i class="fas fa-calendar-check"></i> Appointments
+          </button>
+          <button class="tab-switch" onclick="switchApptTab('pending', this)">
+            <i class="fas fa-hourglass-start"></i> Pending Bookings
+          </button>
+        </div>
+
+        <!-- Scheduled Appointments -->
+        <div id="apptView-scheduled" class="appt-view-section">
+          <!-- Filters -->
+          <div class="table-toolbar">
+            <div class="search-wrap">
+              <i class="fas fa-magnifying-glass"></i>
+              <input type="text" id="apptSearch" placeholder="Search by patient name…" oninput="renderApptsTable()" />
+            </div>
+            <div class="filter-group">
+              <select id="apptDoctorFilter" onchange="renderApptsTable()">
+                <option value="all">All Doctors</option>
+                <option value="Dr. Sandip Roy">Dr. Sandip Roy</option>
+                <option value="Dr. Shirsendu Roy">Dr. Shirsendu Roy</option>
+                <option value="Dr. Intekhab Alam">Dr. Intekhab Alam</option>
+                <option value="Dr. Saddam Hussain">Dr. Saddam Hussain</option>
+              </select>
+              <input type="date" id="apptDateFilter" onchange="renderApptsTable()" title="Filter by date" />
+              <select id="apptStatusFilter" onchange="renderApptsTable()">
+                <option value="all">All Status</option>
+                <option value="Scheduled">Scheduled</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+            </div>
           </div>
-          <div class="filter-group">
-            <select id="apptDoctorFilter" onchange="renderApptsTable()">
-              <option value="all">All Doctors</option>
-              <option value="Dr. Sandip Roy">Dr. Sandip Roy</option>
-              <option value="Dr. Shirsendu Roy">Dr. Shirsendu Roy</option>
-              <option value="Dr. Intekhab Alam">Dr. Intekhab Alam</option>
-              <option value="Dr. Saddam Hussain">Dr. Saddam Hussain</option>
-            </select>
-            <input type="date" id="apptDateFilter" onchange="renderApptsTable()" title="Filter by date" />
-            <select id="apptStatusFilter" onchange="renderApptsTable()">
-              <option value="all">All Status</option>
-              <option value="Scheduled">Scheduled</option>
-              <option value="Completed">Completed</option>
-              <option value="Cancelled">Cancelled</option>
-            </select>
+
+          <div class="table-wrap">
+            <table class="data-table" id="apptTable">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Patient Name</th>
+                  <th>Phone</th>
+                  <th>Doctor</th>
+                  <th>Date</th>
+                  <th>Time</th>
+                  <th>Status</th>
+                  <th>Notes</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="apptTableBody"></tbody>
+            </table>
+            <div class="empty-state hidden" id="apptEmpty">
+              <i class="fas fa-calendar-xmark"></i>
+              <p>No appointments found.</p>
+            </div>
           </div>
         </div>
 
-        <div class="table-wrap">
-          <table class="data-table" id="apptTable">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Patient Name</th>
-                <th>Phone</th>
-                <th>Doctor</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Status</th>
-                <th>Notes</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="apptTableBody"></tbody>
-          </table>
-          <div class="empty-state hidden" id="apptEmpty">
-            <i class="fas fa-calendar-xmark"></i>
-            <p>No appointments found.</p>
+        <!-- Pending Bookings -->
+        <div id="apptView-pending" class="appt-view-section hidden">
+          <div class="table-wrap">
+            <table class="data-table" id="pendingBookingsTable">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>User</th>
+                  <th>Doctor</th>
+                  <th>Date</th>
+                  <th>Time</th>
+                  <th>Reason</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="pendingBookingsBody"></tbody>
+            </table>
           </div>
         </div>
       </section>
@@ -507,6 +601,70 @@
         <button class="btn-secondary" onclick="closeMedicineModal()">Cancel</button>
         <button class="btn-primary" onclick="saveMedicine()">
           <i class="fas fa-floppy-disk"></i> Save Medicine
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================
+       DOCTOR MODAL
+  =================================================== -->
+  <div class="modal-overlay hidden" id="doctorModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="docModalTitle">Add Doctor</h3>
+        <button class="modal-close" onclick="closeDoctorModal()"><i class="fas fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="docEditId" />
+        <div class="form-row">
+          <div class="form-group">
+            <label>Doctor Name *</label>
+            <input type="text" id="docName" placeholder="e.g. Dr. John Smith" />
+          </div>
+          <div class="form-group">
+            <label>Specialty *</label>
+            <select id="docSpecialtyInput">
+              <option value="">— Select —</option>
+              <option value="General">General Physician</option>
+              <option value="Cardiology">Cardiology</option>
+              <option value="Dermatology">Dermatology</option>
+              <option value="Orthopedic">Orthopedic</option>
+              <option value="Pediatrics">Pediatrics</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Experience (Years) *</label>
+            <input type="number" id="docExperience" placeholder="0" min="0" />
+          </div>
+          <div class="form-group">
+            <label>Availability</label>
+            <div class="toggle-wrap">
+              <label class="toggle-switch">
+                <input type="checkbox" id="docAvailable" checked />
+                <span class="toggle-slider"></span>
+              </label>
+              <span id="docAvailLabel" class="toggle-label">Available</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group full-width">
+          <label>Qualifications (optional)</label>
+          <textarea id="docQualifications" rows="2" placeholder="e.g. MBBS, MD, etc."></textarea>
+        </div>
+        <div class="form-group full-width">
+          <label>Notes (optional)</label>
+          <textarea id="docNotes" rows="2" placeholder="Additional information…"></textarea>
+        </div>
+        <div class="modal-error hidden" id="docModalError"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeDoctorModal()">Cancel</button>
+        <button class="btn-primary" onclick="saveDoctor()">
+          <i class="fas fa-floppy-disk"></i> Save Doctor
         </button>
       </div>
     </div>

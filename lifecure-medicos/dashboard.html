@@ -110,6 +110,48 @@
 
   </div>
 
+  <!-- Booking Modal -->
+  <div id="bookingModal" class="modal-overlay hidden">
+    <div class="modal-card" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3>Book Appointment with <span id="bookingDoctorName"></span></h3>
+        <button class="modal-close" onclick="closeBookingModal()"><i class="fas fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="bookingDoctorId" />
+        <form id="bookingForm">
+          <div class="form-group">
+            <label>Your Name *</label>
+            <input type="text" id="bookingName" placeholder="Full name" required />
+          </div>
+          <div class="form-group">
+            <label>Your Phone *</label>
+            <input type="tel" id="bookingPhone" placeholder="10-digit mobile number" required />
+          </div>
+          <div class="form-group">
+            <label>Preferred Date *</label>
+            <input type="date" id="bookingDate" required />
+          </div>
+          <div class="form-group">
+            <label>Preferred Time *</label>
+            <input type="time" id="bookingTime" required />
+          </div>
+          <div class="form-group">
+            <label>Reason for Visit (optional)</label>
+            <textarea id="bookingReason" rows="3" placeholder="e.g., Checkup, Follow-up, etc."></textarea>
+          </div>
+          <div id="bookingError" class="modal-error hidden"></div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeBookingModal()">Cancel</button>
+        <button class="btn-primary" onclick="submitBooking()">
+          <i class="fas fa-check"></i> Confirm Booking
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Footer -->
   <footer class="footer">
     <p>&copy; 2026 LifeCure Medicos. All rights reserved.</p>
